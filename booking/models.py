@@ -1,5 +1,5 @@
 from django.db import models
-from users.views import User
+from users.models import User
 from campaigns.models import *
 
 class Center(models.Model):
@@ -26,12 +26,12 @@ class BookingDose(models.Model):
         VaccineCampaign, on_delete=models.CASCADE,related_name='booked'
     )
     dose_center = models.ForeignKey(
-        Center, on_delete=models.SET_NULL,related_name='does', null=True
+        Center, on_delete=models.SET_NULL,related_name='doses', null=True
     )
     first_dose_date = models.DateField()
-    second_dose_date = models.DateField()
+    second_dose_date = models.DateField(null=True, blank=True)
     status = models.CharField(
-        max_length=20,choices=STATUS_CHOICES, default='booked'
+        max_length=20,choices=STATUS_CHOICES, default=BOOKED
     )
 
     def __str__(self):

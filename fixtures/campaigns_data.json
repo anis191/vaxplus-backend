@@ -1,0 +1,415 @@
+[
+  {
+    "model": "campaigns.category",
+    "pk": 1,
+    "fields": {
+      "name": "Flu",
+      "description": "Seasonal influenza campaigns."
+    }
+  },
+  {
+    "model": "campaigns.category",
+    "pk": 2,
+    "fields": {
+      "name": "Hepatitis",
+      "description": "Awareness and vaccination for Hepatitis A/B."
+    }
+  },
+  {
+    "model": "campaigns.category",
+    "pk": 3,
+    "fields": {
+      "name": "Childhood Immunization",
+      "description": "Routine vaccines for children."
+    }
+  },
+  {
+    "model": "campaigns.vaccine",
+    "pk": 1,
+    "fields": {
+      "name": "FluVax",
+      "total_doses": 1,
+      "dose_gap": 0
+    }
+  },
+  {
+    "model": "campaigns.vaccine",
+    "pk": 2,
+    "fields": {
+      "name": "HepB",
+      "total_doses": 3,
+      "dose_gap": 30
+    }
+  },
+  {
+    "model": "campaigns.vaccine",
+    "pk": 3,
+    "fields": {
+      "name": "Cervarix",
+      "total_doses": 2,
+      "dose_gap": 180
+    }
+  },
+  {
+    "model": "campaigns.vaccine",
+    "pk": 4,
+    "fields": {
+      "name": "OPV",
+      "total_doses": 3,
+      "dose_gap": 30
+    }
+  },
+  {
+    "model": "campaigns.vaccine",
+    "pk": 5,
+    "fields": {
+      "name": "MMR",
+      "total_doses": 2,
+      "dose_gap": 28
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 1,
+    "fields": {
+      "doctor": 1,
+      "title": "Flu Shot Campaign Winter 2025",
+      "description": "Get your annual flu shot.",
+      "category": 1,
+      "vaccine": 1,
+      "start_date": "2025-11-01",
+      "end_date": "2025-12-31",
+      "status": "Upcoming",
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 2,
+    "fields": {
+      "doctor": 1,
+      "title": "Spring Flu Awareness Drive",
+      "description": "FluVax available at health centers.",
+      "category": 1,
+      "vaccine": 1,
+      "start_date": "2025-03-01",
+      "end_date": "2025-04-15",
+      "status": "Ended",
+      "created_at": "2025-01-01T10:00:00Z",
+      "updated_at": "2025-04-20T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 3,
+    "fields": {
+      "doctor": 1,
+      "title": "Hepatitis B Vaccination Camp",
+      "description": "Prevent Hepatitis B virus.",
+      "category": 2,
+      "vaccine": 2,
+      "start_date": "2025-07-01",
+      "end_date": "2025-09-30",
+      "status": "Upcoming",
+      "created_at": "2025-05-01T08:00:00Z",
+      "updated_at": "2025-05-01T08:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 4,
+    "fields": {
+      "doctor": 1,
+      "title": "Hepatitis Awareness Week",
+      "description": "Free screening and vaccine info.",
+      "category": 2,
+      "vaccine": 2,
+      "start_date": "2025-05-10",
+      "end_date": "2025-05-17",
+      "status": "Ended",
+      "created_at": "2025-03-15T09:00:00Z",
+      "updated_at": "2025-05-20T09:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 5,
+    "fields": {
+      "doctor": 1,
+      "title": "Polio Eradication Drive",
+      "description": "OPV for children under 5.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-01-01",
+      "end_date": "2025-03-31",
+      "status": "Ended",
+      "created_at": "2024-12-01T10:00:00Z",
+      "updated_at": "2025-04-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 6,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 1",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-06-01",
+      "end_date": "2025-08-31",
+      "status": "Upcoming",
+      "created_at": "2025-05-01T10:00:00Z",
+      "updated_at": "2025-05-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 7,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 2",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 5,
+      "start_date": "2025-06-02",
+      "end_date": "2025-08-30",
+      "status": "Upcoming",
+      "created_at": "2025-05-02T10:00:00Z",
+      "updated_at": "2025-05-02T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 8,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 3",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-06-03",
+      "end_date": "2025-08-29",
+      "status": "Upcoming",
+      "created_at": "2025-05-03T10:00:00Z",
+      "updated_at": "2025-05-03T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 9,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 4",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 5,
+      "start_date": "2025-06-04",
+      "end_date": "2025-08-28",
+      "status": "Upcoming",
+      "created_at": "2025-05-04T10:00:00Z",
+      "updated_at": "2025-05-04T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 10,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 5",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-06-05",
+      "end_date": "2025-08-27",
+      "status": "Upcoming",
+      "created_at": "2025-05-05T10:00:00Z",
+      "updated_at": "2025-05-05T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 11,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 6",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 5,
+      "start_date": "2025-06-06",
+      "end_date": "2025-08-26",
+      "status": "Upcoming",
+      "created_at": "2025-05-06T10:00:00Z",
+      "updated_at": "2025-05-06T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 12,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 7",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-06-07",
+      "end_date": "2025-08-25",
+      "status": "Upcoming",
+      "created_at": "2025-05-07T10:00:00Z",
+      "updated_at": "2025-05-07T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 13,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 8",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 5,
+      "start_date": "2025-06-08",
+      "end_date": "2025-08-24",
+      "status": "Upcoming",
+      "created_at": "2025-05-08T10:00:00Z",
+      "updated_at": "2025-05-08T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 14,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 9",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-06-09",
+      "end_date": "2025-08-23",
+      "status": "Upcoming",
+      "created_at": "2025-05-09T10:00:00Z",
+      "updated_at": "2025-05-09T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 15,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 10",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 5,
+      "start_date": "2025-06-10",
+      "end_date": "2025-08-22",
+      "status": "Upcoming",
+      "created_at": "2025-05-10T10:00:00Z",
+      "updated_at": "2025-05-10T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 16,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 11",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-06-11",
+      "end_date": "2025-08-21",
+      "status": "Upcoming",
+      "created_at": "2025-05-11T10:00:00Z",
+      "updated_at": "2025-05-11T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 17,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 12",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 5,
+      "start_date": "2025-06-12",
+      "end_date": "2025-08-20",
+      "status": "Upcoming",
+      "created_at": "2025-05-12T10:00:00Z",
+      "updated_at": "2025-05-12T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 18,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 13",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-06-13",
+      "end_date": "2025-08-19",
+      "status": "Upcoming",
+      "created_at": "2025-05-13T10:00:00Z",
+      "updated_at": "2025-05-13T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 19,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 14",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 5,
+      "start_date": "2025-06-14",
+      "end_date": "2025-08-18",
+      "status": "Upcoming",
+      "created_at": "2025-05-14T10:00:00Z",
+      "updated_at": "2025-05-14T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.vaccinecampaign",
+    "pk": 20,
+    "fields": {
+      "doctor": 1,
+      "title": "Routine Child Vaccine Round 15",
+      "description": "MMR and OPV doses for kids.",
+      "category": 3,
+      "vaccine": 4,
+      "start_date": "2025-06-15",
+      "end_date": "2025-08-17",
+      "status": "Upcoming",
+      "created_at": "2025-05-15T10:00:00Z",
+      "updated_at": "2025-05-15T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.campaignreview",
+    "pk": 1,
+    "fields": {
+      "patient": 2,
+      "campaign": 1,
+      "comment": "Very informative and timely.",
+      "rating": 5,
+      "created_at": "2025-11-10T10:00:00Z",
+      "updated_at": "2025-11-10T10:00:00Z"
+    }
+  },
+  {
+    "model": "campaigns.campaignreview",
+    "pk": 2,
+    "fields": {
+      "patient": 3,
+      "campaign": 3,
+      "comment": "Well organized vaccination drive.",
+      "rating": 4,
+      "created_at": "2025-07-15T12:00:00Z",
+      "updated_at": "2025-07-15T12:00:00Z"
+    }
+  }
+]
