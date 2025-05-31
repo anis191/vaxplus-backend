@@ -1,16 +1,19 @@
 from django.urls import path,include
 # from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
-from users.views import UserViewSet
+from users.views import *
 from campaigns.views import *
 
 router = routers.DefaultRouter()
-router.register('users', UserViewSet)
+router.register('users', UserViewSet, basename='user')
+router.register('patients', PatientProfileViewSet, basename='patient')
+router.register('doctors', DoctorProfileViewSet, basename='doctor')
 router.register('categories', CategoryViewSet)
 router.register('campaigns', VaccineCampaignViewSet, basename='campaign')
-router.register('vaccines', VaccineViewSet)
+router.register('vaccines', VaccineViewSet, basename='vaccine')
 
 campaign_router = routers.NestedDefaultRouter(router, 'campaigns', lookup='campaign')
+# campaign_router.register('vaccines', VaccineViewSet, basename='campaign-vaccines')
 campaign_router.register('reviews', CampaignReviewViewSet, basename='campaign-review')
 
 urlpatterns = [
