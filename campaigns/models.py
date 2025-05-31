@@ -2,6 +2,13 @@ from django.db import models
 from users.views import User
 
 # Create your models here.
+class Category(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(max_length=250,blank=True,null=True)
+
+    def __str__(self):
+        return self.name
+
 class VaccineCampaign(models.Model):
     UPCOMING = 'Upcoming'
     ONGOING = 'Ongoing'
@@ -20,6 +27,9 @@ class VaccineCampaign(models.Model):
     )
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE,related_name='vaccine_campaigns'
+    )
     vaccine_name = models.CharField(max_length=100)
     total_doses = models.PositiveIntegerField(default=2)
     dose_gap = models.PositiveIntegerField(default=30)
