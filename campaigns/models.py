@@ -11,6 +11,7 @@ class Category(models.Model):
 
 class Vaccine(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(max_length=500,null=True)
     total_doses = models.PositiveIntegerField(default=2)
     dose_gap = models.PositiveIntegerField(default=30)
     
