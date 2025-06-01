@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import User
 from campaigns.models import *
+from uuid import uuid4
 
 class Center(models.Model):
     name = models.CharField(max_length=100)
@@ -12,11 +13,14 @@ class Center(models.Model):
         return f"{self.name} - {self.city}"
 
 class BookingDose(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     BOOKED = 'Booked'
     COMPLETED = 'Completed'
+    CANCELED = 'Canceled'
     STATUS_CHOICES = [
         (BOOKED, 'Booked'),
         (COMPLETED, 'Completed'),
+        (CANCELED, 'Canceled'), 
     ]
 
     patient = models.ForeignKey(
@@ -38,6 +42,7 @@ class BookingDose(models.Model):
         return f"{self.patient.username} → {self.campaign.title}"
 
 class VaccinationRecord(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     patient = models.ForeignKey(
         User,on_delete=models.CASCADE
     )
@@ -49,3 +54,4 @@ class VaccinationRecord(models.Model):
 
     def __str__(self):
         return f"{self.patient.first_name} - Dose {self.dose_number} ({self.campaign.title})"
+    
