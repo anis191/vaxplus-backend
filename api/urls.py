@@ -14,6 +14,7 @@ router.register('campaigns', VaccineCampaignViewSet, basename='campaign')
 router.register('vaccines', VaccineViewSet, basename='vaccine')
 router.register('centers', CenterViewSet, basename='center')
 router.register('booking_doses', BookingDoseViewSet, basename='booking_dose')
+router.register('vaccination_records', VaccinationRecordViewSet, basename='vaccination_record')
 
 
 campaign_router = routers.NestedDefaultRouter(router, 'campaigns', lookup='campaign')

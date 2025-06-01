@@ -24,7 +24,6 @@ class VaccineViewSet(ModelViewSet):
     # def get_queryset(self):
         # return Vaccine.objects.filter(campaigns=self.kwargs['campaign_pk']).all()
     
-
 class VaccineCampaignViewSet(ModelViewSet):
     queryset = VaccineCampaign.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -52,8 +51,6 @@ class VaccineCampaignViewSet(ModelViewSet):
     def get_serializer_context(self):
         return {'campaign_id' : self.kwargs.get('pk')}
 
-
-
 class CampaignReviewViewSet(ModelViewSet):
     # queryset = CampaignReview.objects.all()
     serializer_class = CampaignReviewSerializers
@@ -65,3 +62,4 @@ class CampaignReviewViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return{'campaign_id' : self.kwargs['campaign_pk']}
+
