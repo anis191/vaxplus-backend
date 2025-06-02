@@ -13,11 +13,12 @@ class SimpleBookingDoseSerializers(serializers.ModelSerializer):
     dates = serializers.ChoiceField(choices=[])
     class Meta:
         model = BookingDose
-        fields = ['patient','dose_center','dates']
+        fields = ['dose_center','dates']
     
     def create(self, validated_data):
         campaign_id = self.context.get('campaign_id')
-        return BookingServices.create_booking_dose(validated_data=validated_data,campaign_id=campaign_id)
+        user = self.context.get('user')
+        return BookingServices.create_booking_dose(validated_data=validated_data,campaign_id=campaign_id, user=user)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -25,7 +25,7 @@ class BookingServices:
             return available_dates
     
     @staticmethod
-    def create_booking_dose(validated_data, campaign_id):
+    def create_booking_dose(validated_data, campaign_id, user):
         campaign = VaccineCampaign.objects.get(pk=campaign_id)
         first_dose_dt = validated_data.pop('dates')
         first_dose_date = datetime.strptime(first_dose_dt, '%Y-%m-%d').date()
@@ -39,7 +39,7 @@ class BookingServices:
             raise ValidationError("Campaign already ended.")
         
         booking = BookingDose.objects.create(
-            patient = validated_data['patient'],
+            patient = user,
             campaign = campaign,
             dose_center = validated_data['dose_center'],
             first_dose_date = first_dose_date,

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from campaigns.models import *
 from users.models import *
-from users.serializers import UserSerializers,DoctorProfileSerializers
+from users.serializers import UserSerializer,DoctorProfileSerializers
 
 class CategorySerializer(serializers.ModelSerializer):
     campaign_count = serializers.IntegerField(read_only=True)

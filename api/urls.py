@@ -6,7 +6,7 @@ from campaigns.views import *
 from booking.views import *
 
 router = routers.DefaultRouter()
-router.register('users', UserViewSet, basename='user')
+# router.register('users', UserViewSet, basename='user')
 router.register('patients', PatientProfileViewSet, basename='patient')
 router.register('doctors', DoctorProfileViewSet, basename='doctor')
 router.register('categories', CategoryViewSet)
@@ -24,4 +24,7 @@ campaign_router.register('reviews', CampaignReviewViewSet, basename='campaign-re
 urlpatterns = [
     path('',include(router.urls)),
     path('',include(campaign_router.urls)),
+
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
 ]

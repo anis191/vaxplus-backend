@@ -10,6 +10,8 @@ from campaigns.filters import VaccineCampaignFilter
 from campaigns.paginations import DefaultPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from campaigns.permissions import IsDoctorOrReadOnly, IsPatient
 
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.annotate(campaign_count=Count('vaccine_campaigns')).all()
@@ -31,25 +33,32 @@ class VaccineCampaignViewSet(ModelViewSet):
     search_fields = ['title','description']
     ordering_fields = ['start_date']
     pagination_class = DefaultPagination
+    # permission_classes = [IsDoctorOrReadOnly]
 
     @action(detail=True, methods=['post'])
     def booked(self, request, pk=None):
         campaign = self.get_object()
         serializer = SimpleBookingDoseSerializers(
             data=request.data,
-            context = {'campaign_id' : campaign.pk}
+            # context = {'campaign_id' : campaign.pk}
+            context = self.get_serializer_context()
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'status' : 'Booked the campaign'})
     
+    def get_permissions(self):
+        if self.action == 'booked':
+            return [IsAuthenticated()]
+        return [IsDoctorOrReadOnly()]
+
     def get_serializer_class(self):
         if self.action == 'booked':
             return SimpleBookingDoseSerializers
         return VaccineCampaignSerializers
     
     def get_serializer_context(self):
-        return {'campaign_id' : self.kwargs.get('pk')}
+        return {'campaign_id' : self.kwargs.get('pk'), 'user' : self.request.user}
 
 class CampaignReviewViewSet(ModelViewSet):
     # queryset = CampaignReview.objects.all()
