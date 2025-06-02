@@ -30,7 +30,7 @@ class PatientProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE,related_name='patient_profile'
     )
-    age = models.PositiveIntegerField()
+    age = models.PositiveIntegerField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     blood_group = models.CharField(max_length=10, null=True, blank=True)
 
@@ -40,8 +40,8 @@ class PatientProfile(models.Model):
 class DoctorProfile(models.Model):
     user = models.OneToOneField(
         User,on_delete=models.CASCADE, related_name='doctor_profile')
-    specialization = models.CharField(max_length=50)
-    contact = models.CharField(max_length=50)
+    specialization = models.CharField(max_length=50,null=True,blank=True)
+    contact = models.CharField(max_length=50,null=True,blank=True)
     profile_picture = models.ImageField(upload_to='doctors/images/', null=True, blank=True)
 
     def __str__(self):

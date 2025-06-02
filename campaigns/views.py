@@ -16,12 +16,14 @@ from campaigns.permissions import IsDoctorOrReadOnly, IsPatient
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.annotate(campaign_count=Count('vaccine_campaigns')).all()
     serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated,IsDoctorOrReadOnly]
 
 class VaccineViewSet(ModelViewSet):
     queryset = Vaccine.objects.all()
     serializer_class = VaccineSerializers
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name','description']
+    permission_classes = [IsDoctorOrReadOnly]
 
     # def get_queryset(self):
         # return Vaccine.objects.filter(campaigns=self.kwargs['campaign_pk']).all()
@@ -63,6 +65,7 @@ class VaccineCampaignViewSet(ModelViewSet):
 class CampaignReviewViewSet(ModelViewSet):
     # queryset = CampaignReview.objects.all()
     serializer_class = CampaignReviewSerializers
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return CampaignReview.objects.filter(
