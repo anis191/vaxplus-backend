@@ -11,7 +11,7 @@ from campaigns.paginations import DefaultPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from campaigns.permissions import IsDoctorOrReadOnly, IsPatient
+from campaigns.permissions import IsDoctorOrReadOnly, IsPatient, IsReviewAuthorOrReadOnly
 
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.annotate(campaign_count=Count('vaccine_campaigns')).all()
@@ -65,7 +65,7 @@ class VaccineCampaignViewSet(ModelViewSet):
 class CampaignReviewViewSet(ModelViewSet):
     # queryset = CampaignReview.objects.all()
     serializer_class = CampaignReviewSerializers
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsReviewAuthorOrReadOnly]
 
     def get_queryset(self):
         return CampaignReview.objects.filter(
@@ -73,5 +73,5 @@ class CampaignReviewViewSet(ModelViewSet):
         )
 
     def get_serializer_context(self):
-        return{'campaign_id' : self.kwargs['campaign_pk']}
+        return{'campaign_id' : self.kwargs['campaign_pk'], 'user' : self.request.user}
 

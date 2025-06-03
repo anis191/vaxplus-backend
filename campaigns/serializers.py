@@ -38,10 +38,11 @@ class VaccineCampaignSerializers(serializers.ModelSerializer):
 class CampaignReviewSerializers(serializers.ModelSerializer):
     class Meta:
         model = CampaignReview
-        fields = ['id','patient','campaign','comment','rating']
+        fields = ['id','comment','rating']
         read_only_field = ['campaign']
     
     def create(self, validated_data):
         campaign_id = self.context['campaign_id']
-        review = CampaignReview.objects.create(campaign_id=campaign_id, **validated_data)
+        user = self.context.get('user')
+        review = CampaignReview.objects.create(patient=user,campaign_id=campaign_id,**validated_data)
         return review

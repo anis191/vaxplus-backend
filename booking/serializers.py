@@ -35,7 +35,31 @@ class BookingDoseSerializers(serializers.ModelSerializer):
     class Meta:
         model = BookingDose
         fields = ['id','patient','campaign','dose_center','first_dose_date','second_dose_date','status']
-        read_only_fields = ['first_dose_date','second_dose_date']
+        read_only_fields = ['patient','campaign','dose_center','first_dose_date','second_dose_date']
+    
+    def validate_status(self, value):
+        user = self.context.get('user')
+        
+        if self.instance:
+            current_status = self.instance.status
+        else:
+            current_status = None
+
+        if user.is_staff:
+            return value
+
+        if user.role == 'Patient':
+            if value not in [BookingDose.BOOKED, BookingDose.CANCELED]:
+                raise serializers.ValidationError("You can only set status to 'Canceled'.")
+        elif user.role == 'Doctor':
+            if not (current_status == BookingDose.BOOKED and value == BookingDose.COMPLETED):
+                raise serializers.ValidationError("Doctors can only set status 'Completed'.")
+        return value
+
+class UpdateBookingDoseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookingDose
+        fields = ['status']
 
 class VaccinationRecordSerializers(serializers.ModelSerializer):
     class Meta:
