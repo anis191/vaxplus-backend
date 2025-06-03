@@ -24,9 +24,6 @@ class VaccineViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name','description']
     permission_classes = [IsDoctorOrReadOnly]
-
-    # def get_queryset(self):
-        # return Vaccine.objects.filter(campaigns=self.kwargs['campaign_pk']).all()
     
 class VaccineCampaignViewSet(ModelViewSet):
     queryset = VaccineCampaign.objects.all()
@@ -35,14 +32,12 @@ class VaccineCampaignViewSet(ModelViewSet):
     search_fields = ['title','description']
     ordering_fields = ['start_date']
     pagination_class = DefaultPagination
-    # permission_classes = [IsDoctorOrReadOnly]
 
     @action(detail=True, methods=['post'])
     def booked(self, request, pk=None):
         campaign = self.get_object()
         serializer = SimpleBookingDoseSerializers(
             data=request.data,
-            # context = {'campaign_id' : campaign.pk}
             context = self.get_serializer_context()
         )
         serializer.is_valid(raise_exception=True)
@@ -63,7 +58,6 @@ class VaccineCampaignViewSet(ModelViewSet):
         return {'campaign_id' : self.kwargs.get('pk'), 'user' : self.request.user}
 
 class CampaignReviewViewSet(ModelViewSet):
-    # queryset = CampaignReview.objects.all()
     serializer_class = CampaignReviewSerializers
     permission_classes = [IsReviewAuthorOrReadOnly]
 

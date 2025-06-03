@@ -27,6 +27,10 @@ class BookingServices:
     @staticmethod
     def create_booking_dose(validated_data, campaign_id, user):
         campaign = VaccineCampaign.objects.get(pk=campaign_id)
+
+        if BookingDose.objects.filter(patient=user, campaign=campaign).exists():
+            raise ValidationError("You already booked this campaign!")
+
         first_dose_dt = validated_data.pop('dates')
         first_dose_date = datetime.strptime(first_dose_dt, '%Y-%m-%d').date()
         gap = campaign.vaccine.dose_gap
@@ -44,6 +48,5 @@ class BookingServices:
             dose_center = validated_data['dose_center'],
             first_dose_date = first_dose_date,
             second_dose_date = second_dose_dt,
-            # status = status
         )
         return booking

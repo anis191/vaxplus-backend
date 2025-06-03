@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from booking.models import *
 from campaigns.models import *
-from datetime import timedelta, date, datetime
 from booking.services import BookingServices
 
 class CenterSerializers(serializers.ModelSerializer):
@@ -31,10 +30,18 @@ class SimpleBookingDoseSerializers(serializers.ModelSerializer):
             except VaccineCampaign.DoesNotExist:
                 return serializers.ValidationError("Campaign is not found")
 
-class BookingDoseSerializers(serializers.ModelSerializer):
+class BookingDoseListSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookingDose
         fields = ['id','patient','campaign','dose_center','first_dose_date','second_dose_date','status']
+        read_only_fields = fields
+
+class BookingDoseSerializers(serializers.ModelSerializer):
+    email = serializers.ReadOnlyField(source='patient.email')
+    title = serializers.ReadOnlyField(source='campaign.title')
+    class Meta:
+        model = BookingDose
+        fields = ['id','patient','email','campaign','title','dose_center','first_dose_date','second_dose_date','status']
         read_only_fields = ['patient','campaign','dose_center','first_dose_date','second_dose_date']
     
     def validate_status(self, value):
@@ -56,12 +63,9 @@ class BookingDoseSerializers(serializers.ModelSerializer):
                 raise serializers.ValidationError("Doctors can only set status 'Completed'.")
         return value
 
-class UpdateBookingDoseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BookingDose
-        fields = ['status']
-
 class VaccinationRecordSerializers(serializers.ModelSerializer):
+    email = serializers.ReadOnlyField(source='patient.email')
+    vaccine = serializers.ReadOnlyField(source='campaign.vaccine.name')
     class Meta:
         model = VaccinationRecord
-        fields = ['id','patient','campaign','dose_number','given_date']
+        fields = ['id','patient','email','campaign','vaccine','dose_number','given_date']

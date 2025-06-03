@@ -6,12 +6,7 @@ from users.permissions import IsDoctorAuthorOrReadOnly, IsPatientOrAdmin
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-# class UserViewSet(ModelViewSet):
-    # queryset = User.objects.all()
-    # serializer_class = UserSerializers
-
 class PatientProfileViewSet(ModelViewSet):
-    # queryset = PatientProfile.objects.all()
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -42,15 +37,6 @@ class PatientProfileViewSet(ModelViewSet):
 
 class DoctorProfileViewSet(ModelViewSet):
     queryset = DoctorProfile.objects.all()
-    # serializer_class = DoctorProfileSerializers
-    # permission_classes = [IsDoctorAuthorOrReadOnly]
-    '''def get_queryset(self):
-        user = self.request.user
-
-        if user.role == User.DOCTOR:
-            return DoctorProfile.objects.filter(user=user)
-        
-        return DoctorProfile.objects.all()'''
 
     def get_permissions(self):
         if self.request.method == 'POST':
