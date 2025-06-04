@@ -20,10 +20,11 @@ class PatientProfileViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        base_query = PatientProfile.objects.select_related('user')
         if user.is_staff:
-            return PatientProfile.objects.all()
+            return base_query
         
-        return PatientProfile.objects.filter(
+        return base_query.filter(
             user = self.request.user
         )
     
@@ -50,7 +51,7 @@ class PatientProfileViewSet(ModelViewSet):
         return Response({"message": "User has been assign to doctor."})
 
 class DoctorProfileViewSet(ModelViewSet):
-    queryset = DoctorProfile.objects.all()
+    queryset = DoctorProfile.objects.select_related('user').all()
 
     def get_permissions(self):
         if self.request.method == 'POST':

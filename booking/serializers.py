@@ -10,6 +10,9 @@ class CenterSerializers(serializers.ModelSerializer):
 
 class SimpleBookingDoseSerializers(serializers.ModelSerializer):
     dates = serializers.ChoiceField(choices=[])
+    dose_center = serializers.PrimaryKeyRelatedField(
+        queryset=Center.objects.all()
+    )
     class Meta:
         model = BookingDose
         fields = ['dose_center','dates']

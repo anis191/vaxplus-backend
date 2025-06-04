@@ -26,7 +26,7 @@ class VaccineViewSet(ModelViewSet):
     permission_classes = [IsDoctorOrReadOnly]
     
 class VaccineCampaignViewSet(ModelViewSet):
-    queryset = VaccineCampaign.objects.all()
+    queryset = VaccineCampaign.objects.select_related('doctor','category','vaccine').prefetch_related('doctor__doctor_profile').all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = VaccineCampaignFilter
     search_fields = ['title','description']
