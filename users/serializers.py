@@ -1,11 +1,10 @@
 from rest_framework import serializers
 from users.models import User, PatientProfile, DoctorProfile
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
-
-
+#
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
-        fields = ['id','email','password','first_name','last_name','address','phone_number','role','nid']
+        fields = ['id','email','password','first_name','last_name','address','phone_number','nid']
 
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):

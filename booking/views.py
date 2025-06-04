@@ -3,6 +3,8 @@ from rest_framework.viewsets import ModelViewSet
 from booking.serializers import *
 from campaigns.permissions import IsDoctorOrReadOnly
 from rest_framework import permissions
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 
 class CenterViewSet(ModelViewSet):
     queryset = Center.objects.all()
@@ -13,6 +15,13 @@ class BookingDoseViewSet(ModelViewSet):
     http_method_names = ['get', 'put', 'head', 'options']
     serializer_class = BookingDoseSerializers
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter,]
+    def filter_queryset(self, queryset):
+        if self.request.user.is_staff or self.request.user.role == User.DOCTOR:
+            self.search_fields = ['patient__email']
+        else:
+            self.search_fields = []
+        return super().filter_queryset(queryset)
 
     def get_queryset(self):
         user = self.request.user

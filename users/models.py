@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from users.managers import CustomUserManager
-# Create your models here.
 
+# Create your models here.
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
@@ -18,7 +18,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='Patient')
     nid = models.CharField(max_length=20, unique=True)
 
-    USERNAME_FIELD = 'email'  # Use email instead of username
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()

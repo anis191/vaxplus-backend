@@ -5,8 +5,19 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from users.permissions import IsDoctorAuthorOrReadOnly, IsPatientOrAdmin
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 
 class PatientProfileViewSet(ModelViewSet):
+    http_method_names = ['get','put','patch','delete']
+    filter_backends = [DjangoFilterBackend, SearchFilter,]
+    def filter_queryset(self, queryset):
+        if self.request.user.is_staff:
+            self.search_fields = ['user__email']
+        else:
+            self.search_fields = []
+        return super().filter_queryset(queryset)
+
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -20,7 +31,10 @@ class PatientProfileViewSet(ModelViewSet):
         return serializer.save(user = self.request.user)
     
     serializer_class = PatientProfileSerializers
-    permission_classes = [IsPatientOrAdmin]
+    def get_permissions(self):
+        if self.action == 'assign_to_doctor':
+            return [IsAdminUser()]
+        return [IsPatientOrAdmin()]
 
     @action(detail=True, methods=['post'])
     def assign_to_doctor(self, request, pk=None):

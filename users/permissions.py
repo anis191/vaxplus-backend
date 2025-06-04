@@ -23,4 +23,4 @@ class IsDoctorAuthorOrReadOnly(permissions.BasePermission):
 class IsPatientOrAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return bool(request.user.is_authenticated and (request.user.role == 'Patient' or request.user.is_staff))
-    
+
