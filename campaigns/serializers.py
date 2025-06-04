@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from campaigns.models import *
 from users.models import *
+from booking.models import BookingDose, VaccinationRecord
 from users.serializers import UserSerializer,DoctorProfileSerializers
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -39,10 +40,19 @@ class CampaignReviewSerializers(serializers.ModelSerializer):
     class Meta:
         model = CampaignReview
         fields = ['id','comment','rating']
-        read_only_field = ['campaign']
+        read_only_fields = ['campaign']
     
     def create(self, validated_data):
         campaign_id = self.context['campaign_id']
         user = self.context.get('user')
-        review = CampaignReview.objects.create(patient=user,campaign_id=campaign_id,**validated_data)
-        return review
+        
+        try:
+            campaign = VaccineCampaign.objects.get(pk=campaign_id)
+        except VaccineCampaign.DoesNotExist:
+            raise serializers.ValidationError("Campaign does not exist.")
+        
+        if BookingDose.objects.filter(patient=user,campaign=campaign).exists() or VaccinationRecord.objects.filter(patient=user,campaign=campaign).exists():
+            review = CampaignReview.objects.create(patient=user,campaign=campaign,**validated_data)
+            return review
+        else:
+            raise serializers.ValidationError("You can't review this camapign. Only booked patient can.")

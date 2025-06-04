@@ -50,3 +50,20 @@ class BookingServices:
             second_dose_date = second_dose_dt,
         )
         return booking
+
+    @staticmethod
+    def validate_booking_status(user, current_instance, new_status):
+        current_status = current_instance.status if current_instance else None
+
+        if user.is_staff:
+            return new_status
+
+        if user.role == 'Patient':
+            if new_status not in [BookingDose.BOOKED, BookingDose.CANCELED]:
+                raise ValidationError("You can only  booked and canceled the campaign.")
+        elif user.role == 'Doctor':
+            if not (current_status == BookingDose.BOOKED and new_status == BookingDose.COMPLETED):
+                raise ValidationError("Doctors can only set status Booked to 'Completed'.")
+
+        return new_status
+

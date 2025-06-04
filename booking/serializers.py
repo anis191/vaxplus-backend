@@ -25,7 +25,7 @@ class SimpleBookingDoseSerializers(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     
-        campaign_id = self.context['campaign_id']
+        campaign_id = self.context.get('campaign_id')
         if campaign_id:
             try:
                 campaign = VaccineCampaign.objects.get(pk=campaign_id)
@@ -49,22 +49,8 @@ class BookingDoseSerializers(serializers.ModelSerializer):
     
     def validate_status(self, value):
         user = self.context.get('user')
-        
-        if self.instance:
-            current_status = self.instance.status
-        else:
-            current_status = None
-
-        if user.is_staff:
-            return value
-
-        if user.role == 'Patient':
-            if value not in [BookingDose.BOOKED, BookingDose.CANCELED]:
-                raise serializers.ValidationError("You can only set status to 'Canceled'.")
-        elif user.role == 'Doctor':
-            if not (current_status == BookingDose.BOOKED and value == BookingDose.COMPLETED):
-                raise serializers.ValidationError("Doctors can only set status 'Completed'.")
-        return value
+        current_instance = getattr(self, 'instance', None)
+        return BookingServices.validate_booking_status(user, current_instance, value)
 
 class VaccinationRecordSerializers(serializers.ModelSerializer):
     email = serializers.ReadOnlyField(source='patient.email')

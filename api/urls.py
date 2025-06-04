@@ -18,7 +18,6 @@ router.register('vaccination_records', VaccinationRecordViewSet, basename='vacci
 
 
 campaign_router = routers.NestedDefaultRouter(router, 'campaigns', lookup='campaign')
-# campaign_router.register('vaccines', VaccineViewSet, basename='campaign-vaccines')
 campaign_router.register('reviews', CampaignReviewViewSet, basename='campaign-review')
 
 urlpatterns = [
