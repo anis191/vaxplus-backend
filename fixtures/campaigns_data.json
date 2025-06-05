@@ -28,8 +28,8 @@
     "pk": 1,
     "fields": {
       "name": "FluVax",
-      "total_doses": 1,
-      "dose_gap": 0
+      "total_doses": 2,
+      "dose_gap": 30
     }
   },
   {
@@ -37,8 +37,8 @@
     "pk": 2,
     "fields": {
       "name": "HepB",
-      "total_doses": 3,
-      "dose_gap": 30
+      "total_doses": 2,
+      "dose_gap": 28
     }
   },
   {
@@ -55,8 +55,8 @@
     "pk": 4,
     "fields": {
       "name": "OPV",
-      "total_doses": 3,
-      "dose_gap": 30
+      "total_doses": 2,
+      "dose_gap": 60
     }
   },
   {
@@ -72,7 +72,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 1,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Flu Shot Campaign Winter 2025",
       "description": "Get your annual flu shot.",
       "category": 1,
@@ -88,7 +88,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 2,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Spring Flu Awareness Drive",
       "description": "FluVax available at health centers.",
       "category": 1,
@@ -104,7 +104,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 3,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Hepatitis B Vaccination Camp",
       "description": "Prevent Hepatitis B virus.",
       "category": 2,
@@ -120,7 +120,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 4,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Hepatitis Awareness Week",
       "description": "Free screening and vaccine info.",
       "category": 2,
@@ -136,7 +136,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 5,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Polio Eradication Drive",
       "description": "OPV for children under 5.",
       "category": 3,
@@ -152,7 +152,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 6,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 1",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -168,7 +168,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 7,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 2",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -184,7 +184,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 8,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 3",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -200,7 +200,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 9,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 4",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -216,7 +216,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 10,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 5",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -232,7 +232,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 11,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 6",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -248,7 +248,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 12,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 7",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -264,7 +264,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 13,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 8",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -280,7 +280,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 14,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 9",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -296,7 +296,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 15,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 10",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -312,7 +312,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 16,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 11",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -328,7 +328,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 17,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 12",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -344,7 +344,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 18,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 13",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -360,7 +360,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 19,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 14",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -376,7 +376,7 @@
     "model": "campaigns.vaccinecampaign",
     "pk": 20,
     "fields": {
-      "doctor": 1,
+      "doctor": 2,
       "title": "Routine Child Vaccine Round 15",
       "description": "MMR and OPV doses for kids.",
       "category": 3,
@@ -392,7 +392,7 @@
     "model": "campaigns.campaignreview",
     "pk": 1,
     "fields": {
-      "patient": 2,
+      "patient": 3,
       "campaign": 1,
       "comment": "Very informative and timely.",
       "rating": 5,

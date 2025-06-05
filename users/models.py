@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from users.managers import CustomUserManager
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class User(AbstractUser):
@@ -42,7 +43,8 @@ class DoctorProfile(models.Model):
         User,on_delete=models.CASCADE, related_name='doctor_profile')
     specialization = models.CharField(max_length=50,null=True,blank=True)
     contact = models.CharField(max_length=50,null=True,blank=True)
-    profile_picture = models.ImageField(upload_to='doctors/images/', null=True, blank=True)
+    profile_picture = CloudinaryField('profile_picture',blank=True)
+    # profile_picture = models.ImageField(upload_to='doctors/images/', null=True, blank=True)
 
     def __str__(self):
         return self.user.email

@@ -23,12 +23,14 @@ class SimpleUserSerializers(serializers.ModelSerializer):
         fields = ['first_name','last_name','phone_number']
 
 class SimpleDoctorSerializers(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField()
     bio = SimpleUserSerializers(source='user',read_only=True)
     class Meta:
         model = DoctorProfile
         fields = ['id','bio','specialization','contact','profile_picture']
 
 class DoctorProfileSerializers(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField()
     user = UserSerializer(read_only=True)
     class Meta:
         model = DoctorProfile
