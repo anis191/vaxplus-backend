@@ -203,4 +203,30 @@ class VaccinationRecordViewSet(ModelViewSet):
         if user.is_staff:
             return base_query
         return base_query.filter(patient=self.request.user)
+    
+    @swagger_auto_schema(
+        operation_summary="List vaccination records",
+        operation_description="""
+        - **Admin** users can view **all** patients vaccination records.
+        
+        - **Patients** can view **only their own** vaccination history.
+        
+        - **These records are auto-generated when a doctor marks a booking as 'Completed'.**
+        """
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Retrieve a specific vaccination record",
+        operation_description="""
+        - **Admin** users can view any patient’s vaccination record detail.
+        
+        - **Patients** can view only their own vaccination record detail.
+        
+        - Vaccination records are read-only and reflect completed campaigns.
+        """
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 

@@ -1,5 +1,8 @@
 from django.db import models
 from users.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
+from datetime import date
 
 # Create your models here.
 class Category(models.Model):
@@ -12,8 +15,11 @@ class Category(models.Model):
 class Vaccine(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(max_length=500,null=True)
-    total_doses = models.PositiveIntegerField(default=2)
-    dose_gap = models.PositiveIntegerField(default=30)
+    total_doses = models.PositiveIntegerField(
+        default=2,
+        validators=[MinValueValidator(1),MaxValueValidator(2)]
+    )
+    dose_gap = models.PositiveIntegerField(default=30,validators=[MaxValueValidator(365)])
     
     def __str__(self):
         return self.name
@@ -54,7 +60,6 @@ class VaccineCampaign(models.Model):
     def __str__(self):
         return self.title
 
-
 class CampaignReview(models.Model):
     patient = models.ForeignKey(
         User,on_delete=models.CASCADE
@@ -63,7 +68,10 @@ class CampaignReview(models.Model):
         VaccineCampaign, on_delete=models.CASCADE, related_name='reviews'
     )
     comment = models.TextField(max_length=200)
-    rating = models.PositiveIntegerField(default=5)
+    rating = models.PositiveIntegerField(
+        default=5,
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

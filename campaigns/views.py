@@ -112,6 +112,68 @@ class VaccineViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name','description']
     permission_classes = [IsDoctorOrReadOnly]
+
+    @swagger_auto_schema(
+        operation_summary="List all vaccines",
+        operation_description="""
+        - Returns a list of all available vaccines.
+        
+        - Searchable by `name` and `description` (query param: `?search=`).
+        
+        - Publicly readable.
+        """
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Create a new vaccine",
+        operation_description="""
+        - **Only Doctors** are allowed to create new vaccines.
+        
+        - Provide all required fields as defined in the serializer.
+        """
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Retrieve a specific vaccine",
+        operation_description="""
+        - View details of a specific vaccine by ID.
+        
+        - Readable by all users.
+        """
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Update a vaccine",
+        operation_description="""
+        - Only **doctors** or **admins** can update vaccine details.
+        """
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Partially update a vaccine",
+        operation_description="""
+        - Only **Doctors** and **admin** can partially update a vaccine record.
+        """
+    )
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Delete a vaccine",
+        operation_description="""
+        - Only **Doctors** and **admin** can delete a vaccine.
+        """
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
     
 class VaccineCampaignViewSet(ModelViewSet):
     queryset = VaccineCampaign.objects.select_related('doctor','category','vaccine').prefetch_related('doctor__doctor_profile').all()
