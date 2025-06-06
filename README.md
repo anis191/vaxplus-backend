@@ -10,8 +10,8 @@ VaxPlus is a secure and scalable RESTful API built using Django and Django REST 
 
 ## 🌐 Live Deployment
 
-- 🔗 **Base URL** – *Coming Soon*
-- 🔗 **API Root** – *Coming Soon*
+- 🔗 **Base URL** – [https://vaxplus-backend.vercel.app/api/v1/auth/](https://vaxplus-backend.vercel.app/api/v1/auth/)
+- 🔗 **API Root** – [https://vaxplus-backend.vercel.app/api/v1/](https://vaxplus-backend.vercel.app/api/v1/)
 
 ---
 
@@ -45,8 +45,8 @@ VaxPlus is a secure and scalable RESTful API built using Django and Django REST 
 
 ## 📚 API Documentation
 
-- 🔍 **Swagger UI** – `/swagger/`
-- 📘 **ReDoc UI** – `/redoc/`
+- 🔍 **Swagger UI** – [https://vaxplus-backend.vercel.app/swagger/](https://vaxplus-backend.vercel.app/swagger/)
+- 📘 **ReDoc UI** – [https://vaxplus-backend.vercel.app/redoc/](https://vaxplus-backend.vercel.app/redoc/)
 
 ---
 
@@ -85,7 +85,7 @@ VaxPlus is a secure and scalable RESTful API built using Django and Django REST 
 This API uses **JWT (JSON Web Tokens)** for secure, stateless user authentication.
 
 ### 📌 Endpoints  
-**Base URL:** `http://127.0.0.1:8000/api/v1` *(Localhost only)*
+**Base URL:** `http://127.0.0.1:8000/api/v1` *(Localhost)*
 
 ### 🔑 Endpoints
 
