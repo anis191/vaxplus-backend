@@ -19,13 +19,14 @@ class VaccineSerializers(serializers.ModelSerializer):
 class VaccineCampaignSerializers(serializers.ModelSerializer):
     vaccine_details = VaccineSerializers(source='vaccine',read_only=True)
     vaccine = serializers.PrimaryKeyRelatedField(queryset=Vaccine.objects.all(),write_only=True)
+    doctor = serializers.PrimaryKeyRelatedField(
+        queryset = User.objects.filter(role=User.DOCTOR),
+        write_only = True
+    )
     doctor_detail = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = VaccineCampaign
         fields = ['id','title','description','category','vaccine','vaccine_details','doctor','doctor_detail','start_date','end_date','status']
-        extra_kwargs = {
-            'doctor' : {'write_only':True}
-        }
     
     def get_doctor_detail(self, obj):
         specialization = None

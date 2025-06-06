@@ -121,6 +121,8 @@ class PatientProfileViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action == 'assign_to_doctor':
             return [IsAdminUser()]
+        if self.request.method == 'POST':
+            return [IsAdminUser()]
         return [IsPatientOrAdmin()]
 
     @swagger_auto_schema(
