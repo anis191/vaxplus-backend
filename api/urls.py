@@ -4,6 +4,7 @@ from rest_framework_nested import routers
 from users.views import *
 from campaigns.views import *
 from booking.views import *
+from payments.views import PaymentViewSet
 
 router = routers.DefaultRouter()
 # router.register('users', UserViewSet, basename='user')
@@ -15,6 +16,7 @@ router.register('vaccines', VaccineViewSet, basename='vaccine')
 router.register('centers', CenterViewSet, basename='center')
 router.register('booking_doses', BookingDoseViewSet, basename='booking_dose')
 router.register('vaccination_records', VaccinationRecordViewSet, basename='vaccination_record')
+router.register('payments', PaymentViewSet, basename='payment')
 
 
 campaign_router = routers.NestedDefaultRouter(router, 'campaigns', lookup='campaign')

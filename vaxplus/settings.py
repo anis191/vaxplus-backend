@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'api',
     'booking',
     'campaigns',
+    'payments',
     'users',
     "debug_toolbar",
 ]
