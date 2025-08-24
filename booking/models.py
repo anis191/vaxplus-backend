@@ -39,7 +39,7 @@ class BookingDose(models.Model):
     )
 
     def __str__(self):
-        return f"{self.patient.username} → {self.campaign.title}"
+        return f"{self.patient.first_name} → {self.campaign.title}"
 
 class VaccinationRecord(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
