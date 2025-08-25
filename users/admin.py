@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from users.models import User, PatientProfile, DoctorProfile
+from users.models import User, PatientProfile, DoctorProfile, DoctorApplication
 
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
@@ -33,3 +33,4 @@ admin.site.register(User, CustomUserAdmin)
 
 admin.site.register(PatientProfile)
 admin.site.register(DoctorProfile)
+admin.site.register(DoctorApplication)

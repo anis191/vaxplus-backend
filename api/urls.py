@@ -9,6 +9,7 @@ from payments.views import PaymentViewSet
 router = routers.DefaultRouter()
 # router.register('users', UserViewSet, basename='user')
 router.register('patients', PatientProfileViewSet, basename='patient')
+router.register('doctors_apply', DoctorApplicationViewSet, basename='doctor_apply')
 router.register('doctors', DoctorProfileViewSet, basename='doctor')
 router.register('categories', CategoryViewSet)
 router.register('campaigns', VaccineCampaignViewSet, basename='campaign')

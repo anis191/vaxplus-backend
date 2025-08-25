@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from users.models import User, DoctorProfile, PatientProfile
 from users.serializers import *
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from users.permissions import IsDoctorAuthorOrReadOnly, IsPatientOrAdmin
+from users.permissions import IsDoctorAuthorOrReadOnly, IsPatientOrAdmin, IsNotDoctorsOrAdmin, IsNotDoctorUserOrAdmin
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -160,6 +160,35 @@ class PatientProfileViewSet(ModelViewSet):
         patient.delete()
 
         return Response({"message": "User has been assign to doctor."})
+
+class DoctorApplicationViewSet(ModelViewSet):
+    # serializer_class = DoctorApplicationSerializer
+    # permission_classes = [IsNotDoctorsOrAdmin]
+    permission_classes = [IsNotDoctorUserOrAdmin]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view',False):
+            return PatientProfile.objects.none()
+        
+        user = self.request.user
+        if user.is_staff:
+            return DoctorApplication.objects.all()
+        return DoctorApplication.objects.filter(
+            user = user
+        )
+    
+    def get_serializer_class(self):
+        if self.request.user.is_staff and self.request.method in ['PUT','PATCH']:
+            return DoctorApprovalSerializer
+        return DoctorApplicationSerializer
+    
+    def create(self, request, *args, **kwargs):
+        if DoctorApplication.objects.filter(user=self.request.user).exists():
+            return Response({"message": "You already applyed!"},)
+        return super().create(request, *args, **kwargs)
 
 class DoctorProfileViewSet(ModelViewSet):
     queryset = DoctorProfile.objects.select_related('user').all()

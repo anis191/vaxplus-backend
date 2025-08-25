@@ -38,6 +38,28 @@ class PatientProfile(models.Model):
     def __str__(self):
         return self.user.first_name
 
+class DoctorApplication(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='doctor_apply'
+    )
+    qualifications = models.TextField(null=True, blank=True)
+    certificate = CloudinaryField('doctor_certificates',blank=True, null=True)
+    license_number = models.CharField(max_length=100)
+
+    PENDING = 'Pending'
+    APPROVED = 'Approved'
+    REJECTED = 'Rejected'
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (APPROVED, 'Approved'),
+        (REJECTED, 'Rejected'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    applied_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.status}"
+
 class DoctorProfile(models.Model):
     user = models.OneToOneField(
         User,on_delete=models.CASCADE, related_name='doctor_profile')
