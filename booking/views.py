@@ -103,9 +103,11 @@ class BookingDoseViewSet(ModelViewSet):
             return BookingDose.objects.none()
         
         user = self.request.user
-        base_query = BookingDose.objects.select_related('patient','campaign','dose_center')
-        if user.is_staff or user.role == 'Doctor':
+        base_query = BookingDose.objects.select_related('patient','campaign','dose_center','vaccine')
+        if user.is_staff:
             return base_query
+        if user.role == 'Doctor':
+            return base_query.filter(campaign__in = user.involve_campaigns.all())
         return base_query.filter(patient=user)
     
     def get_serializer_context(self):
@@ -199,7 +201,7 @@ class VaccinationRecordViewSet(ModelViewSet):
             return VaccinationRecord.objects.none()
 
         user = self.request.user
-        base_query = VaccinationRecord.objects.select_related('patient','campaign','campaign__vaccine')
+        base_query = VaccinationRecord.objects.select_related('patient','campaign','vaccine')
         if user.is_staff:
             return base_query
         return base_query.filter(patient=self.request.user)

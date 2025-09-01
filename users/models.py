@@ -2,8 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from users.managers import CustomUserManager
 from cloudinary.models import CloudinaryField
+from datetime import date
 
-# Create your models here.
+# Create your models here
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
@@ -31,12 +32,21 @@ class PatientProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE,related_name='patient_profile'
     )
-    age = models.PositiveIntegerField(null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     blood_group = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return self.user.first_name
+    
+    @property
+    def age(self):
+        if self.date_of_birth is None:
+            return None
+        today = date.today()
+        age = today.year - self.date_of_birth.year
+        if (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day):
+            age -= 1
+        return age
 
 class DoctorApplication(models.Model):
     user = models.OneToOneField(
@@ -66,7 +76,6 @@ class DoctorProfile(models.Model):
     specialization = models.CharField(max_length=50,null=True,blank=True)
     contact = models.CharField(max_length=50,null=True,blank=True)
     profile_picture = CloudinaryField('profile_picture',blank=True)
-    # profile_picture = models.ImageField(upload_to='doctors/images/', null=True, blank=True)
 
     def __str__(self):
         return self.user.email

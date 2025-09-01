@@ -6,26 +6,32 @@ from django.db import transaction
 @receiver(post_save, sender=BookingDose)
 def create_record(sender, instance, created, **kwargs):
     if not created:
-        if instance.status == BookingDose.COMPLETED:
-            with transaction.atomic():
-                if VaccinationRecord.objects.filter(
-                    patient = instance.patient,
-                    campaign = instance.campaign
-                ).exists():
-                    return
-                
-                dates = []
-                dates.append(instance.first_dose_date)
-                dates.append(instance.second_dose_date)
-                records = [
-                    VaccinationRecord(
-                        patient = instance.patient,
-                        campaign = instance.campaign,
-                        dose_number = i,
-                        given_date = date
-                    )
-                    for i, date in enumerate(dates, start=1)
-                ]
-                VaccinationRecord.objects.bulk_create(records)
+        with transaction.atomic():
+            dose_number = None
+            given_date = None
 
+            if instance.status == BookingDose.FIRST_COMPLETED:
+                dose_number = 1
+                given_date = instance.first_dose_date
+            elif instance.status == BookingDose.SECOND_COMPLETED:
+                dose_number = 2
+                given_date = instance.second_dose_date
+            elif instance.status == BookingDose.COMPLETED:
+                if instance.booster_dose_date != None:
+                    dose_number = 3
+                    given_date = instance.booster_dose_date
+                else:
+                    dose_number = 2
+                    given_date = instance.second_dose_date
+            
+            if dose_number and given_date:
+                VaccinationRecord.objects.create(
+                    patient = instance.patient,
+                    campaign = instance.campaign,
+                    vaccine = instance.vaccine,
+                    dose_number = dose_number,
+                    given_date = given_date
+                )
+
+            if instance.status == BookingDose.COMPLETED:
                 instance.delete()

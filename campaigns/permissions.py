@@ -9,6 +9,14 @@ class IsDoctorOrReadOnly(permissions.BasePermission):
                 request.user.role == 'Doctor' or request.user.is_staff
             )
         )
+    
+    # Resone: Only those doctors can edit a campaign, who involved on this vaccine campaign
+    # def has_object_permission(self, request, view, obj):
+        # if request.method in permissions.SAFE_METHODS:
+            # return True
+        # if request.user.is_staff:
+            # return True
+        # return obj.doctor.filter(id=request.user.id).exists()
 
 class IsPatient(permissions.BasePermission):
     def has_permission(self, request, view):

@@ -7,8 +7,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
+from django.db.models import Prefetch
+from campaigns.models import VaccineCampaign
+from rest_framework import generics
+from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
-
+#
 class PatientProfileViewSet(ModelViewSet):
     http_method_names = ['get','post','put','patch','delete']
     filter_backends = [DjangoFilterBackend, SearchFilter,]
@@ -162,8 +166,6 @@ class PatientProfileViewSet(ModelViewSet):
         return Response({"message": "User has been assign to doctor."})
 
 class DoctorApplicationViewSet(ModelViewSet):
-    # serializer_class = DoctorApplicationSerializer
-    # permission_classes = [IsNotDoctorsOrAdmin]
     permission_classes = [IsNotDoctorUserOrAdmin]
 
     def perform_create(self, serializer):
@@ -174,11 +176,10 @@ class DoctorApplicationViewSet(ModelViewSet):
             return PatientProfile.objects.none()
         
         user = self.request.user
+        base_query = DoctorApplication.objects.select_related('user')
         if user.is_staff:
-            return DoctorApplication.objects.all()
-        return DoctorApplication.objects.filter(
-            user = user
-        )
+            return base_query
+        return base_query.filter(user = user)
     
     def get_serializer_class(self):
         if self.request.user.is_staff and self.request.method in ['PUT','PATCH']:
@@ -272,3 +273,12 @@ class DoctorProfileViewSet(ModelViewSet):
     )
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
+
+class DoctorParticipatingCampaignsListView(generics.ListAPIView):
+    serializer_class = DoctorParticipatingCampaignsSerializer
+
+    def get_queryset(self):
+        doctor_pk = self.kwargs['doctor_pk']
+
+        return VaccineCampaign.objects.filter(doctor__doctor_profile__id = doctor_pk).only('id', 'title', 'start_date', 'end_date', 'status')
+

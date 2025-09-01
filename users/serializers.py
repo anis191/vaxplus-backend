@@ -2,7 +2,8 @@ from rest_framework import serializers
 from users.models import User, PatientProfile, DoctorProfile, DoctorApplication
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
 from django.db import transaction
-
+from campaigns.models import VaccineCampaign
+#
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
         fields = ['id','email','password','first_name','last_name','address','phone_number','nid']
@@ -14,6 +15,7 @@ class UserSerializer(BaseUserSerializer):
 
 class PatientProfileSerializers(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    age = serializers.ReadOnlyField()
     class Meta:
         model = PatientProfile
         fields = ['id','user','age','date_of_birth','blood_group']
@@ -21,7 +23,7 @@ class PatientProfileSerializers(serializers.ModelSerializer):
 class SimpleUserSerializers(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name','last_name','phone_number']
+        fields = ['id','first_name','last_name','phone_number']
 
 class DoctorApplicationSerializer(serializers.ModelSerializer):
     certificate = serializers.ImageField(required=False, allow_null=True)
@@ -62,7 +64,13 @@ class SimpleDoctorSerializers(serializers.ModelSerializer):
 
 class DoctorProfileSerializers(serializers.ModelSerializer):
     profile_picture = serializers.ImageField()
-    user = UserSerializer(read_only=True)
+    # user = UserSerializer(read_only=True)
     class Meta:
         model = DoctorProfile
-        fields = ['id','user','specialization','contact','profile_picture']
+        # fields = ['id','user','specialization','contact','profile_picture']
+        fields = ['id','specialization','contact','profile_picture']
+
+class DoctorParticipatingCampaignsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VaccineCampaign
+        fields = ['id','title','start_date','end_date','status']

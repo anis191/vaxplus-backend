@@ -2,18 +2,20 @@ from django.shortcuts import render
 from campaigns.models import *
 from campaigns.serializers import *
 from booking.serializers import SimpleBookingDoseSerializers, BookingDoseSerializers
+from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from campaigns.filters import VaccineCampaignFilter
+from campaigns.filters import VaccineCampaignFilter, VaccineFilter
 from campaigns.paginations import DefaultPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from campaigns.permissions import IsDoctorOrReadOnly, IsPatient, IsReviewAuthorOrReadOnly
+from django.db.models import Prefetch
 from drf_yasg.utils import swagger_auto_schema
-
+#
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.annotate(campaign_count=Count('vaccine_campaigns')).all()
     serializer_class = CategorySerializer
@@ -111,6 +113,7 @@ class VaccineViewSet(ModelViewSet):
     serializer_class = VaccineSerializers
     filter_backends = [DjangoFilterBackend, SearchFilter]
     search_fields = ['name','description']
+    filterset_class = VaccineFilter
     permission_classes = [IsDoctorOrReadOnly]
 
     @swagger_auto_schema(
@@ -176,7 +179,11 @@ class VaccineViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
     
 class VaccineCampaignViewSet(ModelViewSet):
-    queryset = VaccineCampaign.objects.select_related('doctor','category','vaccine').prefetch_related('doctor__doctor_profile').all()
+    # queryset = VaccineCampaign.objects.select_related('category').prefetch_related('vaccine').all()
+    queryset = VaccineCampaign.objects.select_related('category').prefetch_related(Prefetch(
+            'vaccine',
+            queryset=Vaccine.objects.only('id', 'name', 'total_doses', 'is_booster')
+        )).all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = VaccineCampaignFilter
     search_fields = ['title','description']
@@ -302,7 +309,7 @@ class CampaignReviewViewSet(ModelViewSet):
     def get_queryset(self):
         return CampaignReview.objects.filter(
             campaign_id = self.kwargs.get('campaign_pk')
-        )
+        ).select_related('patient')
 
     def get_serializer_context(self):
         return{'campaign_id' : self.kwargs.get('campaign_pk'), 'user' : self.request.user}
@@ -387,3 +394,11 @@ class CampaignReviewViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
     
+class CampaignDoctorsListView(generics.ListAPIView):
+    serializer_class = CampaignDoctorsSerializers
+    def get_queryset(self):
+        campaign_id = self.kwargs.get('pk')
+        return User.objects.filter(
+            role = User.DOCTOR,
+            involve_campaigns__id = campaign_id
+        ).select_related('doctor_profile')

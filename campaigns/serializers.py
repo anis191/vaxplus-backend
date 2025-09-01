@@ -3,6 +3,7 @@ from campaigns.models import *
 from users.models import *
 from booking.models import BookingDose, VaccinationRecord
 from users.serializers import UserSerializer,DoctorProfileSerializers
+from django.urls import reverse
 
 class CategorySerializer(serializers.ModelSerializer):
     campaign_count = serializers.IntegerField(read_only=True)
@@ -14,35 +15,47 @@ class CategorySerializer(serializers.ModelSerializer):
 class VaccineSerializers(serializers.ModelSerializer):
     class Meta:
         model = Vaccine
-        fields = ['id','name','description','total_doses','dose_gap']
+        fields = ['id','name','description','total_doses','dose_gap','is_booster','booster_gap','min_age','max_age','manufacturer','approved_date','is_active']
+
+class SimpleVaccineSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Vaccine
+        fields = ['id','name','total_doses','is_booster']
+
+class CampaignDoctorsSerializers(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    specialization = serializers.CharField(source='doctor_profile.specialization')
+    class Meta:
+        model = User
+        fields = ['id','doctor_profile','name','specialization']
+    
+    def get_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}".strip()
 
 class VaccineCampaignSerializers(serializers.ModelSerializer):
-    vaccine_details = VaccineSerializers(source='vaccine',read_only=True)
-    vaccine = serializers.PrimaryKeyRelatedField(queryset=Vaccine.objects.all(),write_only=True)
+    vaccine_details = SimpleVaccineSerializers(source='vaccine',many=True,read_only=True)
+    # vaccine = serializers.PrimaryKeyRelatedField(many=True, queryset=Vaccine.objects.filter(is_active=True), write_only=True)
+    vaccine = serializers.PrimaryKeyRelatedField(many=True, queryset=Vaccine.objects.filter(is_active=True).only('id', 'name'), write_only=True)
     doctor = serializers.PrimaryKeyRelatedField(
+        many=True,
         queryset = User.objects.filter(role=User.DOCTOR),
         write_only = True
     )
-    doctor_detail = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = VaccineCampaign
-        fields = ['id','title','description','category','vaccine','vaccine_details','doctor','doctor_detail','start_date','end_date','status']
-    
-    def get_doctor_detail(self, obj):
-        specialization = None
-        if hasattr(obj.doctor, 'doctor_profile'):
-            specialization = obj.doctor.doctor_profile.specialization
-        return{
-            'name' : obj.doctor.get_full_name(),
-            'specialization' : specialization
-        }
-
+        fields = ['id','title','description','category','vaccine','vaccine_details','doctor','start_date','end_date','status']
+        
 class CampaignReviewSerializers(serializers.ModelSerializer):
+    # name = serializers.ReadOnlyField(source='patient.first_name')
+    name = serializers.SerializerMethodField()
     class Meta:
         model = CampaignReview
-        fields = ['id','comment','rating']
+        fields = ['id','name','comment','rating']
         read_only_fields = ['campaign']
     
+    def get_name(self, obj):
+        return f"{obj.patient.first_name} {obj.patient.last_name}"
+
     def create(self, validated_data):
         campaign_id = self.context['campaign_id']
         user = self.context.get('user')

@@ -13,9 +13,12 @@ class SimpleBookingDoseSerializers(serializers.ModelSerializer):
     dose_center = serializers.PrimaryKeyRelatedField(
         queryset=Center.objects.all()
     )
+    vaccine = serializers.PrimaryKeyRelatedField(
+        queryset = Vaccine.objects.none()
+    )
     class Meta:
         model = BookingDose
-        fields = ['dose_center','dates']
+        fields = ['vaccine','dose_center','dates']
     
     def create(self, validated_data):
         campaign_id = self.context.get('campaign_id')
@@ -30,6 +33,7 @@ class SimpleBookingDoseSerializers(serializers.ModelSerializer):
             try:
                 campaign = VaccineCampaign.objects.get(pk=campaign_id)
                 self.fields['dates'].choices = BookingServices.get_available_dates(campaign)
+                self.fields['vaccine'].queryset = campaign.vaccine.all()
             except VaccineCampaign.DoesNotExist:
                 return serializers.ValidationError("Campaign is not found")
 
@@ -42,10 +46,12 @@ class BookingDoseListSerializer(serializers.ModelSerializer):
 class BookingDoseSerializers(serializers.ModelSerializer):
     email = serializers.ReadOnlyField(source='patient.email')
     title = serializers.ReadOnlyField(source='campaign.title')
+    vaccine_name = serializers.ReadOnlyField(source='vaccine.name')
+    dose_center_name = serializers.ReadOnlyField(source='dose_center.name')
     class Meta:
         model = BookingDose
-        fields = ['id','patient','email','campaign','title','dose_center','first_dose_date','second_dose_date','status']
-        read_only_fields = ['patient','campaign','dose_center','first_dose_date','second_dose_date']
+        fields = ['id','patient','email','campaign','title','vaccine_name','dose_center','dose_center_name','first_dose_date','second_dose_date','booster_dose_date','status']
+        read_only_fields = ['patient','campaign','dose_center','first_dose_date','second_dose_date','booster_dose_date']
     
     def validate_status(self, value):
         user = self.context.get('user')
@@ -54,7 +60,7 @@ class BookingDoseSerializers(serializers.ModelSerializer):
 
 class VaccinationRecordSerializers(serializers.ModelSerializer):
     email = serializers.ReadOnlyField(source='patient.email')
-    vaccine = serializers.ReadOnlyField(source='campaign.vaccine.name')
+    vaccine = serializers.ReadOnlyField(source='vaccine.name')
     class Meta:
         model = VaccinationRecord
         fields = ['id','patient','email','campaign','vaccine','dose_number','given_date']

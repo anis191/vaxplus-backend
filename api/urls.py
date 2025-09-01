@@ -19,13 +19,14 @@ router.register('booking_doses', BookingDoseViewSet, basename='booking_dose')
 router.register('vaccination_records', VaccinationRecordViewSet, basename='vaccination_record')
 router.register('payments', PaymentViewSet, basename='payment')
 
-
 campaign_router = routers.NestedDefaultRouter(router, 'campaigns', lookup='campaign')
 campaign_router.register('reviews', CampaignReviewViewSet, basename='campaign-review')
 
 urlpatterns = [
     path('',include(router.urls)),
     path('',include(campaign_router.urls)),
+    path('campaigns/<int:pk>/doctors/', CampaignDoctorsListView.as_view(), name='campaign-doctors'),
+    path('doctors/<int:doctor_pk>/campaigns/', DoctorParticipatingCampaignsListView.as_view(), name='participating-campaigns'),
 
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),

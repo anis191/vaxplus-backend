@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+# from booking.models import Center
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 from datetime import date
@@ -20,6 +21,16 @@ class Vaccine(models.Model):
         validators=[MinValueValidator(1),MaxValueValidator(2)]
     )
     dose_gap = models.PositiveIntegerField(default=30,validators=[MaxValueValidator(365)])
+    is_booster = models.BooleanField(default=False)
+    booster_gap = models.PositiveIntegerField(
+        null=True, blank=True
+    )
+    is_active = models.BooleanField(default=True)
+    min_age = models.PositiveIntegerField(null=True)
+    max_age = models.PositiveIntegerField(null=True)
+
+    manufacturer = models.CharField(max_length=100, null=True, blank=True)
+    approved_date = models.DateField(null=True, blank=True)
     
     def __str__(self):
         return self.name
@@ -37,16 +48,19 @@ class VaccineCampaign(models.Model):
         (ENDED, 'Ended'),
         (CANCELED, 'Canceled'),
     ]
-    doctor = models.ForeignKey(
-        User,on_delete=models.CASCADE,related_name='involve_campaigns'
+    doctor = models.ManyToManyField(
+        User,
+        related_name='involve_campaigns',
+        limit_choices_to={'role': User.DOCTOR}
     )
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=500)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE,related_name='vaccine_campaigns'
     )
-    vaccine = models.ForeignKey(
-        Vaccine,on_delete=models.CASCADE, related_name='campaigns'
+    vaccine = models.ManyToManyField(
+        Vaccine,related_name='campaigns',
+        limit_choices_to={'is_active': True}
     )
     start_date = models.DateField()
     end_date = models.DateField()
