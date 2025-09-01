@@ -77,5 +77,8 @@ class DoctorProfile(models.Model):
     contact = models.CharField(max_length=50,null=True,blank=True)
     profile_picture = CloudinaryField('profile_picture',blank=True)
 
+    class Meta:
+        ordering = ["-id"]
+
     def __str__(self):
         return self.user.email

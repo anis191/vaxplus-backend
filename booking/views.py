@@ -2,15 +2,19 @@ from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from booking.serializers import *
 from campaigns.permissions import IsDoctorOrReadOnly
+from campaigns.paginations import VaccinationRecordPagination
 from rest_framework import permissions
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
+from booking.filters import BookingDoseFilter
 from drf_yasg.utils import swagger_auto_schema
 
 class CenterViewSet(ModelViewSet):
     queryset = Center.objects.all()
     serializer_class = CenterSerializers
     permission_classes = [IsDoctorOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['name','address','city']
 
     @swagger_auto_schema(
         operation_summary="List all vaccination centers",
@@ -91,6 +95,8 @@ class BookingDoseViewSet(ModelViewSet):
     serializer_class = BookingDoseSerializers
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, SearchFilter,]
+    filterset_class = BookingDoseFilter
+
     def filter_queryset(self, queryset):
         if self.request.user.is_staff or self.request.user.role == User.DOCTOR:
             self.search_fields = ['patient__email']
@@ -190,11 +196,21 @@ class BookingDoseViewSet(ModelViewSet):
     )
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
-
+#
 class VaccinationRecordViewSet(ModelViewSet):
     http_method_names = ['get','head','options']
     serializer_class = VaccinationRecordSerializers
     permission_classes=[permissions.IsAuthenticated]
+    pagination_class = VaccinationRecordPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter,OrderingFilter]
+    ordering_fields = ['given_date']
+
+    def filter_queryset(self, queryset):
+        if self.request.user.is_staff:
+            self.search_fields = ['patient__email']
+        else:
+            self.search_fields = []
+        return super().filter_queryset(queryset)
 
     def get_queryset(self):
         if getattr(self, 'swagger_fake_view',False):

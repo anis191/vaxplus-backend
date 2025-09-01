@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from users.models import User, DoctorProfile, PatientProfile
 from users.serializers import *
+from users.paginations import PatientsPagination
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from users.permissions import IsDoctorAuthorOrReadOnly, IsPatientOrAdmin, IsNotDoctorsOrAdmin, IsNotDoctorUserOrAdmin
 from rest_framework.decorators import action
@@ -8,11 +9,14 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.db.models import Prefetch
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from users.filters import DoctorApplicationsFilter
 from campaigns.models import VaccineCampaign
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
-#
+
 class PatientProfileViewSet(ModelViewSet):
     http_method_names = ['get','post','put','patch','delete']
     filter_backends = [DjangoFilterBackend, SearchFilter,]
@@ -35,6 +39,13 @@ class PatientProfileViewSet(ModelViewSet):
         return base_query.filter(
             user = self.request.user
         )
+    
+    def paginate_queryset(self, queryset):
+        if self.request.user.is_staff:
+            self.pagination_class = PatientsPagination
+        else:
+            self.pagination_class = None
+        return super().paginate_queryset(queryset)
     
     @swagger_auto_schema(
         operation_summary="List patient profiles",
@@ -123,13 +134,13 @@ class PatientProfileViewSet(ModelViewSet):
     
     serializer_class = PatientProfileSerializers
     def get_permissions(self):
-        if self.action == 'assign_to_doctor':
-            return [IsAdminUser()]
+        # if self.action == 'assign_to_doctor':
+            # return [IsAdminUser()]
         if self.request.method == 'POST':
             return [IsAdminUser()]
         return [IsPatientOrAdmin()]
 
-    @swagger_auto_schema(
+    '''@swagger_auto_schema(
         operation_summary="Assign a patient to doctor (Admin only)",
         operation_description="""
         ### Admin-only action
@@ -151,7 +162,8 @@ class PatientProfileViewSet(ModelViewSet):
            
            - The user no longer appears in the patients list, but appears in doctors
         """
-    )
+    )'''
+    '''
     @action(detail=True, methods=['post'])
     def assign_to_doctor(self, request, pk=None):
         patient = self.get_object()
@@ -164,9 +176,13 @@ class PatientProfileViewSet(ModelViewSet):
         patient.delete()
 
         return Response({"message": "User has been assign to doctor."})
+        '''
 
 class DoctorApplicationViewSet(ModelViewSet):
     permission_classes = [IsNotDoctorUserOrAdmin]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['user__email']
+    filterset_class = DoctorApplicationsFilter
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -193,6 +209,9 @@ class DoctorApplicationViewSet(ModelViewSet):
 
 class DoctorProfileViewSet(ModelViewSet):
     queryset = DoctorProfile.objects.select_related('user').all()
+    # pagination_class = DoctorsPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    search_fields = ['user__first_name', 'user__last_name','specialization']
 
     def get_permissions(self):
         if self.request.method == 'POST':

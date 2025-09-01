@@ -6,7 +6,7 @@ class VaccineFilter(FilterSet):
     user_age = NumberFilter(method='filter_by_age')
     class Meta:
         model = Vaccine
-        fields = []
+        fields = {}
     
     def filter_by_age(self, queryset, name, value):
         return queryset.filter(
