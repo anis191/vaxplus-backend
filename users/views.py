@@ -202,10 +202,49 @@ class DoctorApplicationViewSet(ModelViewSet):
             return DoctorApprovalSerializer
         return DoctorApplicationSerializer
     
+    @swagger_auto_schema(
+        operation_summary="List Doctor Applications",
+        operation_description="Admin can view all applications. Normal users can view their own application only."
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+    
+    @swagger_auto_schema(
+        operation_summary="Retrieve Doctor Application",
+        operation_description="Retrieve a single doctor application by ID."
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Apply as Doctor",
+        operation_description="Authenticated users can submit a doctor application. Users cannot apply more than once."
+    )
     def create(self, request, *args, **kwargs):
         if DoctorApplication.objects.filter(user=self.request.user).exists():
             return Response({"message": "You already applyed!"},)
         return super().create(request, *args, **kwargs)
+    
+    @swagger_auto_schema(
+        operation_summary="Approve or Reject Doctor Application",
+        operation_description="Admin users can update application status. Approving automatically updates user role and creates DoctorProfile."
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary="Partial Update of Doctor Application",
+        operation_description="Admin users can partially update application status. Approving automatically updates user role and creates DoctorProfile."
+    )
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+    
+    @swagger_auto_schema(
+        operation_summary="Delete Doctor Application",
+        operation_description="Delete a doctor application. Only allowed for admins."
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
 
 class DoctorProfileViewSet(ModelViewSet):
     queryset = DoctorProfile.objects.select_related('user').all()

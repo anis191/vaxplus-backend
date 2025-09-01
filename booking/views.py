@@ -148,55 +148,53 @@ class BookingDoseViewSet(ModelViewSet):
         return super().retrieve(request, *args, **kwargs)
     
     @swagger_auto_schema(
-    operation_summary="Update the status of a booked vaccine campaign dose",
-    operation_description="""
-    This endpoint allows updating the status of a booked vaccine campaign dose based on the user's role.
-    
-    ### Use Case & Workflow
-    
-    - This view handles **only `Booked` campaigns**.
-    
-    - **Patients**:
-      - Can only see **their own booked doses**.
+        operation_summary="Update booking dose status",
+        operation_description="""
+        Update the status of a booked vaccine dose based on your role and campaign involvement.
 
-      - Can update their booking status **from `Booked` to `Canceled` only**.
-    
-    - **Doctors**:
-      - Can view **all patient bookings**.
+        ### Roles & Permissions
 
-      - Can **search by patient email** using the `?search=` query param.
+        - **Patient**:
+          - Can only update **their own bookings**.
+          - Allowed status change: `Booked` → `Canceled`.
 
-        - Example: `/api/v1/booking_doses/?search=patient5@gmail.com`
-      
-      - After confirming that a patient has received all required doses, the doctor can:
-        
-        - Visit the booking detail endpoint by `id`(uuid):
-          
-          `/api/v1/booking_doses/{uuid}/`
-        
-        - **Change the status from `Booked` to `Completed`.**
-    
-    ### System Behavior
-    
-    - When a doctor changes the booking status to `Completed`:
-      
-      - A new record is automatically created in `vaccination_records`, storing the patient's completed vaccination history.
-      
-      - The entry is then **deleted** from the `booking_doses`.
-      
-      - The booking will **no longer appear** in `booking_doses`.
-    
-    ### Permissions:
-    - **Patient** Can only update own bookings → `Canceled`
-    
-    - **Doctor** Can search and update bookings → `Completed`
-    
-    - **Admin** Can perform full updates without restriction
-    """
+        - **Doctor**:
+          - Can manage bookings **only for campaigns they are involved in**.
+          - Allowed status transitions:
+            - `Booked` → `First Dose Completed`
+            - `First Dose Completed` → `Second Dose Completed` (if booster scheduled) or `Completed`
+            - `Second Dose Completed` → `Completed` (if booster scheduled)
+          - Cannot view or update bookings outside their campaigns.
+
+        - **Admin/Staff**:
+          - Can perform full updates without restriction.
+
+        ### System Behavior
+
+        - When a booking is marked as `First Dose Completed`, `Second Dose Completed`, or `Completed`:
+          - A corresponding record is automatically added to **VaccinationRecord**.
+
+        - When a booking is marked as `Completed`:
+          - The booking is automatically **deleted** from `booking_doses`.
+          - The booking will no longer appear in list endpoints.
+
+        ### Usage Example
+
+        - Endpoint: `PUT /api/v1/booking_doses/{uuid}/`
+        - Request Body Example:
+        ```json
+        {
+            "status": "Canceled"
+        }
+        ```
+        - Doctors can only update bookings related to their own campaigns.
+
+        - Patients can only update their own bookings.
+        """
     )
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
-#
+
 class VaccinationRecordViewSet(ModelViewSet):
     http_method_names = ['get','head','options']
     serializer_class = VaccinationRecordSerializers
