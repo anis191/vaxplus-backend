@@ -5,3 +5,6 @@ class PatientsPagination(PageNumberPagination):
 
 # class DoctorsPagination(PageNumberPagination):
     # page_size = 15
+
+# class PaymentsPagination(PageNumberPagination):
+    # page_size = 15

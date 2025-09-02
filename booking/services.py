@@ -1,6 +1,7 @@
 from datetime import timedelta, date, datetime
 from campaigns.models import *
 from booking.models import *
+from payments.models import Payment
 from rest_framework.exceptions import ValidationError
 
 class BookingServices:
@@ -28,6 +29,10 @@ class BookingServices:
     def create_booking_dose(validated_data, campaign_id, user):
         campaign = VaccineCampaign.objects.get(pk=campaign_id)
         vaccine = validated_data['vaccine']
+
+        if campaign.is_premium:
+            if not Payment.objects.filter(patient=user, campaign=campaign, status=Payment.SUCCESS).exists():
+                raise ValidationError("This is a premium vaccine campaign. Please complete payment before booking.")
 
         if BookingDose.objects.filter(patient=user, campaign=campaign, vaccine=vaccine).exists():
             raise ValidationError("You have already booked this vaccine in this campaign. Please check your bookings.")

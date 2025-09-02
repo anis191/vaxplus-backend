@@ -187,7 +187,7 @@ class VaccineCampaignViewSet(ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = VaccineCampaignFilter
     search_fields = ['title','description']
-    ordering_fields = ['start_date']
+    ordering_fields = ['start_date','registration_fee']
     pagination_class = DefaultPagination
 
     @swagger_auto_schema(

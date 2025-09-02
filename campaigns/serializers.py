@@ -34,7 +34,6 @@ class CampaignDoctorsSerializers(serializers.ModelSerializer):
 
 class VaccineCampaignSerializers(serializers.ModelSerializer):
     vaccine_details = SimpleVaccineSerializers(source='vaccine',many=True,read_only=True)
-    # vaccine = serializers.PrimaryKeyRelatedField(many=True, queryset=Vaccine.objects.filter(is_active=True), write_only=True)
     vaccine = serializers.PrimaryKeyRelatedField(many=True, queryset=Vaccine.objects.filter(is_active=True).only('id', 'name'), write_only=True)
     doctor = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -43,7 +42,7 @@ class VaccineCampaignSerializers(serializers.ModelSerializer):
     )
     class Meta:
         model = VaccineCampaign
-        fields = ['id','title','description','category','vaccine','vaccine_details','doctor','start_date','end_date','status']
+        fields = ['id','title','description','category','vaccine','vaccine_details','doctor','is_premium','registration_fee','start_date','end_date','status']
         
 class CampaignReviewSerializers(serializers.ModelSerializer):
     # name = serializers.ReadOnlyField(source='patient.first_name')

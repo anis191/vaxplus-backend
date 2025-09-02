@@ -27,7 +27,6 @@ SECRET_KEY = 'django-insecure-ebq=m^$tm+u(y%hkk4x0&86bjdp$((*klyc0eiwq@&@kri%@h8
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-# DEBUG = True
 
 ALLOWED_HOSTS = [".vercel.app",'127.0.0.1']
 AUTH_USER_MODEL = 'users.User'
@@ -209,3 +208,10 @@ EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Your email
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
+
+SSL_COMMERZ_SETTINGS = {
+    'store_id': config('STORE_ID'),
+    'store_pass': config('STORE_PASS'),
+    'issandbox': config('IS_SANDBOX', cast=bool, default=True)
+}
+

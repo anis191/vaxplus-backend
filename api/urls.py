@@ -4,7 +4,7 @@ from rest_framework_nested import routers
 from users.views import *
 from campaigns.views import *
 from booking.views import *
-from payments.views import PaymentViewSet
+from payments.views import *
 
 router = routers.DefaultRouter()
 # router.register('users', UserViewSet, basename='user')
@@ -27,7 +27,12 @@ urlpatterns = [
     path('',include(campaign_router.urls)),
     path('campaigns/<int:pk>/doctors/', CampaignDoctorsListView.as_view(), name='campaign-doctors'),
     path('doctors/<int:doctor_pk>/campaigns/', DoctorParticipatingCampaignsListView.as_view(), name='participating-campaigns'),
+    path('payment/initiate/', initiate_payment, name='initiate-payment'),
 
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+
+    path("payment/success/", payment_success, name='payment-success'),
+    path("payment/cancel/", payment_cencel, name='payment-cancel'),
+    path("payment/fail/", payment_fail, name='payment-fail'),
 ]

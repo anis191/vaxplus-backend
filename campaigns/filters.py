@@ -19,6 +19,7 @@ class VaccineCampaignFilter(FilterSet):
         model = VaccineCampaign
         fields = {
             'category_id' : ['exact'],
+            'is_premium' : ['exact'],
             'start_date' : ['gt','lt'],
             'status' : ['exact'],
         }
