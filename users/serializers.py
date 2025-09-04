@@ -63,7 +63,8 @@ class SimpleDoctorSerializers(serializers.ModelSerializer):
         fields = ['id','bio','specialization','contact','profile_picture']
 
 class DoctorProfileSerializers(serializers.ModelSerializer):
-    profile_picture = serializers.ImageField()
+    # profile_picture = serializers.ImageField()
+    profile_picture = serializers.ImageField(required=False, allow_null=True)
     # user = UserSerializer(read_only=True)
     class Meta:
         model = DoctorProfile

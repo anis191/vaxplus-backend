@@ -33,6 +33,7 @@ class CampaignDoctorsSerializers(serializers.ModelSerializer):
         return f"{obj.first_name} {obj.last_name}".strip()
 
 class VaccineCampaignSerializers(serializers.ModelSerializer):
+    banner = serializers.ImageField(required=False, allow_null=True)
     vaccine_details = SimpleVaccineSerializers(source='vaccine',many=True,read_only=True)
     vaccine = serializers.PrimaryKeyRelatedField(many=True, queryset=Vaccine.objects.filter(is_active=True).only('id', 'name'), write_only=True)
     doctor = serializers.PrimaryKeyRelatedField(
@@ -42,7 +43,7 @@ class VaccineCampaignSerializers(serializers.ModelSerializer):
     )
     class Meta:
         model = VaccineCampaign
-        fields = ['id','title','description','category','vaccine','vaccine_details','doctor','is_premium','registration_fee','start_date','end_date','status']
+        fields = ['id','title','description','category','banner','vaccine','vaccine_details','doctor','is_premium','registration_fee','start_date','end_date','status']
         
 class CampaignReviewSerializers(serializers.ModelSerializer):
     # name = serializers.ReadOnlyField(source='patient.first_name')

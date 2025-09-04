@@ -4,6 +4,7 @@ from users.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 from datetime import date
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class Category(models.Model):
@@ -58,6 +59,7 @@ class VaccineCampaign(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE,related_name='vaccine_campaigns'
     )
+    banner = CloudinaryField('campaign_banner', blank=True, null=True)
     vaccine = models.ManyToManyField(
         Vaccine,related_name='campaigns',
         limit_choices_to={'is_active': True}

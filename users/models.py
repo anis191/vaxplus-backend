@@ -75,7 +75,7 @@ class DoctorProfile(models.Model):
         User,on_delete=models.CASCADE, related_name='doctor_profile')
     specialization = models.CharField(max_length=50,null=True,blank=True)
     contact = models.CharField(max_length=50,null=True,blank=True)
-    profile_picture = CloudinaryField('profile_picture',blank=True)
+    profile_picture = CloudinaryField('profile_picture',blank=True,null=True)
 
     class Meta:
         ordering = ["-id"]
