@@ -70,3 +70,9 @@ class CampaignReviewSerializers(serializers.ModelSerializer):
             return review
         else:
             raise serializers.ValidationError("You can't review this camapign. Only booked patient can.")
+
+class SimpleCampaignListSerializer(serializers.ModelSerializer):
+    vaccine_details = SimpleVaccineSerializers(source='vaccine',many=True,read_only=True)
+    class Meta:
+        model = VaccineCampaign
+        fields = ['id','title','description','banner','vaccine_details','is_premium','start_date','end_date','status']

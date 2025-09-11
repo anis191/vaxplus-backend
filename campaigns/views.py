@@ -3,6 +3,7 @@ from campaigns.models import *
 from campaigns.serializers import *
 from booking.serializers import SimpleBookingDoseSerializers, BookingDoseSerializers
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
@@ -402,3 +403,20 @@ class CampaignDoctorsListView(generics.ListAPIView):
             role = User.DOCTOR,
             involve_campaigns__id = campaign_id
         ).select_related('doctor_profile')
+
+class SimpleCampaignListView(APIView):
+    def get(self, request, *args, **kwargs):
+        base_query = VaccineCampaign.objects.prefetch_related('vaccine')
+        upcoming = base_query.filter(status=VaccineCampaign.UPCOMING)[:3]
+        ongoing = base_query.filter(status=VaccineCampaign.ONGOING)[:3]
+        ended = base_query.filter(status=VaccineCampaign.ENDED)[:3]
+
+        upcoming_campaign = SimpleCampaignListSerializer(upcoming, many=True).data
+        ongoing_campaign = SimpleCampaignListSerializer(ongoing, many=True).data
+        ended_campaign = SimpleCampaignListSerializer(ended, many=True).data
+
+        return Response({
+            "upcoming": upcoming_campaign,
+            "ongoing": ongoing_campaign,
+            "ended": ended_campaign,
+        })

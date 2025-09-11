@@ -27,6 +27,7 @@ urlpatterns = [
     path('',include(campaign_router.urls)),
     path('campaigns/<int:pk>/doctors/', CampaignDoctorsListView.as_view(), name='campaign-doctors'),
     path('doctors/<int:doctor_pk>/campaigns/', DoctorParticipatingCampaignsListView.as_view(), name='participating-campaigns'),
+    path("featured_campaigns/", SimpleCampaignListView.as_view(), name="featured_campaigns"),
     path('payment/initiate/', initiate_payment, name='initiate-payment'),
 
     path('auth/', include('djoser.urls')),
