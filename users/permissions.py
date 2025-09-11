@@ -4,7 +4,7 @@ from users.models import User
 class IsDoctorAuthorOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
-            if request.user.is_authenticated:
+            # if request.user.is_authenticated:
                 return True
         
         if request.user.is_staff:
