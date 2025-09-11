@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.db.models import F, Window
+from django.db.models.functions import RowNumber
 from campaigns.models import *
 from campaigns.serializers import *
 from booking.serializers import SimpleBookingDoseSerializers, BookingDoseSerializers
@@ -404,6 +406,7 @@ class CampaignDoctorsListView(generics.ListAPIView):
             involve_campaigns__id = campaign_id
         ).select_related('doctor_profile')
 
+'''
 class SimpleCampaignListView(APIView):
     def get(self, request, *args, **kwargs):
         base_query = VaccineCampaign.objects.prefetch_related('vaccine')
@@ -420,3 +423,30 @@ class SimpleCampaignListView(APIView):
             "ongoing": ongoing_campaign,
             "ended": ended_campaign,
         })
+'''
+
+class SimpleCampaignListView(APIView):
+    def get(self, request, *args, **kwargs):
+        campaigns_qs = VaccineCampaign.objects.prefetch_related('vaccine').annotate(
+            row_number=Window(
+                expression=RowNumber(),
+                partition_by=[F('status')],
+                order_by=F('id').desc()
+            )
+        ).filter(row_number__lte=3)
+
+        campaigns = {
+            "upcoming": [],
+            "ongoing": [],
+            "ended": [],
+        }
+
+        for campaign in campaigns_qs:
+            key = campaign.status.lower()
+            if key in campaigns:
+                campaigns[key].append(campaign)
+
+        for key in campaigns:
+            campaigns[key] = SimpleCampaignListSerializer(campaigns[key], many=True).data
+
+        return Response(campaigns)
