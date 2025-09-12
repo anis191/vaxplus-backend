@@ -18,7 +18,7 @@ from rest_framework.permissions import IsAuthenticated
 from campaigns.permissions import IsDoctorOrReadOnly, IsPatient, IsReviewAuthorOrReadOnly
 from django.db.models import Prefetch
 from drf_yasg.utils import swagger_auto_schema
-#
+
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.annotate(campaign_count=Count('vaccine_campaigns')).all()
     serializer_class = CategorySerializer
@@ -185,7 +185,7 @@ class VaccineCampaignViewSet(ModelViewSet):
     # queryset = VaccineCampaign.objects.select_related('category').prefetch_related('vaccine').all()
     queryset = VaccineCampaign.objects.select_related('category').prefetch_related(Prefetch(
             'vaccine',
-            queryset=Vaccine.objects.only('id', 'name', 'total_doses', 'is_booster')
+            queryset=Vaccine.objects.only('id', 'name', 'total_doses', 'dose_gap','is_booster')
         )).all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = VaccineCampaignFilter

@@ -4,7 +4,7 @@ from users.models import *
 from booking.models import BookingDose, VaccinationRecord
 from users.serializers import UserSerializer,DoctorProfileSerializers
 from django.urls import reverse
-
+#
 class CategorySerializer(serializers.ModelSerializer):
     campaign_count = serializers.IntegerField(read_only=True)
 
@@ -20,14 +20,15 @@ class VaccineSerializers(serializers.ModelSerializer):
 class SimpleVaccineSerializers(serializers.ModelSerializer):
     class Meta:
         model = Vaccine
-        fields = ['id','name','total_doses','is_booster']
+        fields = ['id','name','total_doses','dose_gap','is_booster']
 
 class CampaignDoctorsSerializers(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     specialization = serializers.CharField(source='doctor_profile.specialization')
+    profile_picture = serializers.ImageField(source='doctor_profile.profile_picture')
     class Meta:
         model = User
-        fields = ['id','doctor_profile','name','specialization']
+        fields = ['id','doctor_profile','profile_picture','name','specialization']
     
     def get_name(self, obj):
         return f"{obj.first_name} {obj.last_name}".strip()
