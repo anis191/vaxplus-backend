@@ -11,7 +11,8 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         ref_name = 'CustomUser'
-        fields = ['id','first_name','last_name','email','address','phone_number']
+        fields = ['id','first_name','last_name','email','address','phone_number','is_staff','role']
+        read_only_fields = ['is_staff','role']
 
 class PatientProfileSerializers(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
