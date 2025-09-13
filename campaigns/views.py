@@ -22,7 +22,7 @@ from drf_yasg.utils import swagger_auto_schema
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.annotate(campaign_count=Count('vaccine_campaigns')).all()
     serializer_class = CategorySerializer
-    permission_classes = [IsAuthenticated,IsDoctorOrReadOnly]
+    permission_classes = [IsDoctorOrReadOnly]
 
     @swagger_auto_schema(
     operation_summary="Browse all vaccine categories",
