@@ -29,6 +29,7 @@ urlpatterns = [
     path('doctors/<int:doctor_pk>/campaigns/', DoctorParticipatingCampaignsListView.as_view(), name='participating-campaigns'),
     path("featured_campaigns/", SimpleCampaignListView.as_view(), name="featured_campaigns"),
     path('payment/initiate/', initiate_payment, name='initiate-payment'),
+    path("data/", DashboardStatsView.as_view(), name="dashboard-data"),
 
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),

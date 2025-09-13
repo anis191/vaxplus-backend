@@ -1,5 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from users.models import User, DoctorProfile, PatientProfile
+from booking.models import BookingDose, VaccinationRecord
+from payments.models import Payment
 from users.serializers import *
 from users.paginations import PatientsPagination
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -12,8 +14,10 @@ from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from users.filters import DoctorApplicationsFilter
-from campaigns.models import VaccineCampaign
+from campaigns.models import VaccineCampaign, Vaccine
 from rest_framework import generics
+from rest_framework.views import APIView
+from django.db.models import Count, Q, Sum
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
 
@@ -340,3 +344,42 @@ class DoctorParticipatingCampaignsListView(generics.ListAPIView):
 
         return VaccineCampaign.objects.filter(doctor__doctor_profile__id = doctor_pk).only('id', 'title', 'start_date', 'end_date', 'status')
 
+class DashboardStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        data = {}
+
+        if user.is_staff:
+            total_payment = Payment.objects.filter(status=Payment.SUCCESS).aggregate(total=Sum("amount"))
+            data = {
+                "total_users": User.objects.count(),
+                "total_doctors": User.objects.filter(role=User.DOCTOR).count(),
+                "total_campaigns": VaccineCampaign.objects.count(),
+                "total_vaccines": Vaccine.objects.count(),
+                "total_booking": BookingDose.objects.count(),
+                "total_payment": total_payment["total"] or 0,
+            }
+
+        elif user.role == User.PATIENT:
+            data["total_campaigns"] = VaccineCampaign.objects.count()
+            data["total_booked"] = BookingDose.objects.filter(patient=user).count()
+            data["total_vaccine_dose"] = VaccinationRecord.objects.filter(patient=user).count()
+            total_amount = Payment.objects.filter(patient=user, status=Payment.SUCCESS).aggregate(
+            total_payment=Sum("amount"))
+            data["total_payment"] = total_amount["total_payment"] or 0
+
+        elif user.role == User.DOCTOR:
+            campaign_ids = list(user.involve_campaigns.values_list("id", flat=True))
+            total_bookings = BookingDose.objects.filter(campaign_id__in=campaign_ids).count()
+            total_payment =(
+                Payment.objects.filter(campaign_id__in=campaign_ids, status=Payment.SUCCESS)
+                .aggregate(total=Sum("amount"))["total"] or 0
+            )
+            data = {
+                "involved_campaigns": len(campaign_ids),
+                "all_booking": total_bookings,
+                "total_payment": total_payment,
+            }
+        return Response(data)
