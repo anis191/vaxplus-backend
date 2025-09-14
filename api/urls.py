@@ -30,6 +30,7 @@ urlpatterns = [
     path("featured_campaigns/", SimpleCampaignListView.as_view(), name="featured_campaigns"),
     path('payment/initiate/', initiate_payment, name='initiate-payment'),
     path("data/", DashboardStatsView.as_view(), name="dashboard-data"),
+    path("campaigns/has_paid/<int:campaign_id>/", HasPaidCampaign.as_view()),
 
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),

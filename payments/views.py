@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
 from .models import Payment
 from .serializers import PaymentSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -142,3 +143,10 @@ def payment_fail(request):
         return Response({"error": "Payment record not found"}, status=status.HTTP_404_NOT_FOUND)
     # return redirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
 
+class HasPaidCampaign(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, campaign_id):
+        user = request.user
+        has_paid = Payment.objects.filter(patient=user, campaign_id=campaign_id, status=Payment.SUCCESS).exists()
+        return Response({"hasPaid" : has_paid})
