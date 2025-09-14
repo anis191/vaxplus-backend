@@ -114,35 +114,25 @@ def initiate_payment(request):
 @api_view(['POST'])
 def payment_success(request):
     tran_id = request.data.get("tran_id")
-    try:
-        payment = Payment.objects.get(transaction_id = tran_id)
-        payment.status = Payment.SUCCESS
-        payment.save()
-        return Response({"message": "Payment Successful", "tran_id": tran_id})
-    except Payment.DoesNotExist:
-        # return Response({"error": "Payment record not found"}, status=status.HTTP_404_NOT_FOUND)
-        return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
+    payment = Payment.objects.get(transaction_id = tran_id)
+    payment.status = Payment.SUCCESS
+    payment.save()
+    return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
 
 @api_view(['POST'])
 def payment_cencel(request):
     tran_id = request.data.get("tran_id")
-    try:
-        payment = Payment.objects.get(transaction_id = tran_id)
-        payment.delete()
-        return Response({"message" : "Payment Cancelled"})
-    except Payment.DoesNotExist:
-        return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
+    payment = Payment.objects.get(transaction_id = tran_id)
+    payment.delete()
+    return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
 
 @api_view(['POST'])
 def payment_fail(request):
     tran_id = request.data.get("tran_id")
-    try:
-        payment = Payment.objects.get(transaction_id = tran_id)
-        payment.status = Payment.FAILED
-        payment.save()
-        return Response({"message": "Payment Failed", "tran_id": tran_id})
-    except Payment.DoesNotExist:
-        return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
+    payment = Payment.objects.get(transaction_id = tran_id)
+    payment.status = Payment.FAILED
+    payment.save()
+    return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
 
 class HasPaidCampaign(APIView):
     permission_classes = [IsAuthenticated]
