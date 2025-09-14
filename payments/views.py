@@ -1,4 +1,5 @@
 from rest_framework.response import Response
+from django.shortcuts import render, redirect
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ModelViewSet
@@ -13,6 +14,7 @@ import uuid
 from drf_yasg.utils import swagger_auto_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import PaymentsFilter
+from django.conf import settings as main_settings
 # from users.paginations import PaymentsPagination
 
 class PaymentViewSet(ModelViewSet):
@@ -85,9 +87,9 @@ def initiate_payment(request):
     post_body['total_amount'] = amount
     post_body['currency'] = "BDT"
     post_body['tran_id'] = tran_id
-    post_body['success_url'] = "http://127.0.0.1:8000/api/v1/payment/success/"
-    post_body['fail_url'] = "http://127.0.0.1:8000/api/v1/payment/fail/"
-    post_body['cancel_url'] = "http://127.0.0.1:8000/api/v1/payment/cancel/"
+    post_body['success_url'] = f"{main_settings.BACKEND_URL}/api/v1/payment/success/"
+    post_body['fail_url'] = f"{main_settings.BACKEND_URL}/api/v1/payment/fail/"
+    post_body['cancel_url'] = f"{main_settings.BACKEND_URL}/api/v1/payment/cancel/"
     post_body['emi_option'] = 0
     post_body['cus_name'] = f"{user.first_name} {user.last_name}"
     post_body['cus_email'] = user.email
@@ -118,7 +120,8 @@ def payment_success(request):
         payment.save()
         return Response({"message": "Payment Successful", "tran_id": tran_id})
     except Payment.DoesNotExist:
-        return Response({"error": "Payment record not found"}, status=status.HTTP_404_NOT_FOUND)
+        # return Response({"error": "Payment record not found"}, status=status.HTTP_404_NOT_FOUND)
+        return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
 
 @api_view(['POST'])
 def payment_cencel(request):
@@ -128,8 +131,7 @@ def payment_cencel(request):
         payment.delete()
         return Response({"message" : "Payment Cancelled"})
     except Payment.DoesNotExist:
-        return Response({"error": "Payment record not found"}, status=404)
-    # return redirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
+        return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
 
 @api_view(['POST'])
 def payment_fail(request):
@@ -140,8 +142,7 @@ def payment_fail(request):
         payment.save()
         return Response({"message": "Payment Failed", "tran_id": tran_id})
     except Payment.DoesNotExist:
-        return Response({"error": "Payment record not found"}, status=status.HTTP_404_NOT_FOUND)
-    # return redirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
+        return redirect(f"{main_settings.FRONTEND_URL}/campaigns/")
 
 class HasPaidCampaign(APIView):
     permission_classes = [IsAuthenticated]

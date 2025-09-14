@@ -225,3 +225,5 @@ SSL_COMMERZ_SETTINGS = {
     'issandbox': config('IS_SANDBOX', cast=bool, default=True)
 }
 
+BACKEND_URL = config("BACKEND_URL")
+FRONTEND_URL= config("FRONTEND_URL")
