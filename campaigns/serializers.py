@@ -49,9 +49,10 @@ class VaccineCampaignSerializers(serializers.ModelSerializer):
 class CampaignReviewSerializers(serializers.ModelSerializer):
     # name = serializers.ReadOnlyField(source='patient.first_name')
     name = serializers.SerializerMethodField()
+    user_id = serializers.ReadOnlyField(source='patient.id')
     class Meta:
         model = CampaignReview
-        fields = ['id','name','comment','rating']
+        fields = ['id','user_id','name','comment','rating']
         read_only_fields = ['campaign']
     
     def get_name(self, obj):
