@@ -31,6 +31,7 @@ urlpatterns = [
     path('payment/initiate/', initiate_payment, name='initiate-payment'),
     path("data/", DashboardStatsView.as_view(), name="dashboard-data"),
     path("campaigns/has_paid/<int:campaign_id>/", HasPaidCampaign.as_view()),
+    path("campaigns/has_booked/<int:campaign_id>/", HasBookCampaign.as_view()),
 
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),

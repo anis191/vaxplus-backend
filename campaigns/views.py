@@ -450,3 +450,11 @@ class SimpleCampaignListView(APIView):
             campaigns[key] = SimpleCampaignListSerializer(campaigns[key], many=True).data
 
         return Response(campaigns)
+    
+class HasBookCampaign(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, campaign_id):
+        user = request.user
+        has_booked = BookingDose.objects.filter(patient=user, campaign_id=campaign_id).exists() or VaccinationRecord.objects.filter(patient=user, campaign_id=campaign_id).exists()
+        return Response({"hasBooked" : has_booked})
