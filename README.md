@@ -22,7 +22,8 @@ VaxPlus is a secure and scalable RESTful API built using Django and Django REST 
 - **User Management** – Register, log in, and manage user profiles  
 - **Campaign Management** – Full CRUD operations for vaccination campaigns  
 - **Vaccination Centers** – Create, update, and manage vaccine center details  
-- **Booking System** – Book, reschedule, or cancel vaccination appointments  
+- **Booking System** – Book, reschedule, or cancel vaccination appointments 
+- **Payment Integration (SSLCommerz)** – Secure online payments for vaccination booking
 - **Admin Panel** – Manage users, vaccine info, and appointment data 
 - **Advanced Filters** – Filter campaigns by category, date, status, and more  
 - **Search & Ordering** – Search by campaign or vaccine title and description; order by date or relevance  
@@ -39,6 +40,7 @@ VaxPlus is a secure and scalable RESTful API built using Django and Django REST 
 - **Database**: SQLite (development)
 - **Image Handling**: Pillow
 - **Filtering**: django-filter
+- **Payment Gateway**: SSLCommerz
 - **Dependencies**: See [requirements.txt](requirements.txt)
 
 ---
@@ -96,6 +98,16 @@ This API uses **JWT (JSON Web Tokens)** for secure, stateless user authenticatio
 | POST   | `/auth/users/`            | **Register a new user (Sign up)** ✅ |
 
 > 💡 **Note:** After registration, use the [`/auth/jwt/create/`](http://127.0.0.1:8000/api/v1/auth/jwt/create/) endpoint to log in and receive your **JWT tokens**.
+
+## 💳 Payment Integration (SSLCommerz)
+
+Payments are required **only for premium vaccination campaigns**.  
+
+### 📌 Payment Flow
+1. User selects a **premium vaccination campaign**.  
+2. At checkout, the system redirects to the **SSLCommerz hosted payment page**.  
+3. Upon successful payment, SSLCommerz notifies the system via IPN (Instant Payment Notification).  
+4. The campaign booking is confirmed and marked as **Paid**.  
 
 ## 📂 Project Structure
 
