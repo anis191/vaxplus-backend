@@ -383,3 +383,15 @@ class DashboardStatsView(APIView):
                 "total_payment": total_payment,
             }
         return Response(data)
+
+class DonationDataView(APIView):
+    def get(self, request):
+        donations = Payment.objects.filter(is_donate=True)
+
+        total_donation = donations.aggregate(total=Sum('amount'))['total'] or 0
+        total_donors = donations.values('patient').distinct().count()
+
+        return Response({
+            'total_donation': total_donation,
+            'total_donors': total_donors
+        })

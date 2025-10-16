@@ -66,8 +66,9 @@ def initiate_payment(request):
     user = request.user
     campaign = request.data.get('campaign')
     amount = request.data.get('amount')
+    is_donate = request.data.get('is_donate', False)
 
-    if Payment.objects.filter(patient=user, campaign_id=campaign, status=Payment.SUCCESS).exists():
+    if not is_donate and Payment.objects.filter(patient=user, campaign_id=campaign, status=Payment.SUCCESS).exists():
         return Response({"error": "You have already paid for this campaign."},
                         status=status.HTTP_400_BAD_REQUEST)
 
@@ -78,7 +79,8 @@ def initiate_payment(request):
         campaign_id = campaign,
         amount = amount,
         status = Payment.PENDING,
-        transaction_id = tran_id
+        transaction_id = tran_id,
+        is_donate=is_donate
     )
 
     sslcz = SSLCOMMERZ(settings.SSL_COMMERZ_SETTINGS)
@@ -100,8 +102,8 @@ def initiate_payment(request):
     post_body['shipping_method'] = "NO"
     post_body['multi_card_name'] = ""
     post_body['num_of_item'] = 1
-    post_body['product_name'] = "Vaccine"
-    post_body['product_category'] = "Medicine"
+    post_body['product_name'] = "Donation" if is_donate else "Vaccine"
+    post_body['product_category'] = "Donation" if is_donate else "Medicine"
     post_body['product_profile'] = "general"
 
     response = sslcz.createSession(post_body) # API response
